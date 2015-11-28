@@ -2,8 +2,13 @@ package com.github.jarlah.dragontale.tutorial.state;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.github.jarlah.dragontale.tutorial.entity.Enemy;
+import com.github.jarlah.dragontale.tutorial.entity.HUD;
 import com.github.jarlah.dragontale.tutorial.entity.Player;
+import com.github.jarlah.dragontale.tutorial.entity.enemies.Slugger;
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
 import com.github.jarlah.dragontale.tutorial.tilemap.Background;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
@@ -13,6 +18,10 @@ public class Level1State extends GameState {
 	private Background bg;
 
 	private Player player;
+	
+	private List<Enemy> enemies;
+	
+	private HUD hud;
 
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -25,13 +34,19 @@ public class Level1State extends GameState {
 		tileMap.loadTiles("Tilesets/grasstileset.gif");
 		tileMap.loadMap("Maps/level1-1.map");
 		tileMap.setPosition(0, 0);
-		tileMap.setTween(1);
+		tileMap.setTween(0.07);
 
 		bg = new Background("Backgrounds/grassbg1.gif", 0.1);
 
 		player = new Player(tileMap);
 		player.setPosition(100, 100);
+		
+		enemies = new ArrayList<>();
+		Slugger s = new Slugger(tileMap);
+		s.setPosition(100, 100);
+		enemies.add(s);
 
+		hud = new HUD(player);
 	}
 
 	public void update() {
@@ -40,7 +55,12 @@ public class Level1State extends GameState {
 		player.update();
 		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getx(),
 				GamePanel.HEIGHT / 2 - player.gety());
-
+		
+		bg.setPosition(tileMap.getx(), tileMap.gety());
+		
+		for (Enemy e: enemies) {
+			e.update();
+		}
 	}
 
 	public void draw(Graphics2D g) {
@@ -54,6 +74,11 @@ public class Level1State extends GameState {
 		// draw player
 		player.draw(g);
 
+		for (Enemy e: enemies) {
+			e.draw(g);
+		}
+		
+		hud.draw(g);
 	}
 
 	public void keyPressed(int k) {

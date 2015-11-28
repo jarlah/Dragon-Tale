@@ -121,12 +121,12 @@ public class TileMap {
 		return tileSize;
 	}
 
-	public int getx() {
-		return (int) x;
+	public double getx() {
+		return x;
 	}
 
-	public int gety() {
-		return (int) y;
+	public double gety() {
+		return y;
 	}
 
 	public int getWidth() {
