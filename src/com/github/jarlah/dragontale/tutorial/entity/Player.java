@@ -3,6 +3,8 @@ package com.github.jarlah.dragontale.tutorial.entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -26,7 +28,7 @@ public class Player extends Actor {
 	private boolean firing;
 	private int fireCost;
 	private int fireBallDamage;
-	// private ArrayList<FireBall> fireBalls;
+	private List<FireBall> fireBalls;
 
 	// scratch
 	private boolean scratching;
@@ -80,7 +82,7 @@ public class Player extends Actor {
 
 		fireCost = 200;
 		fireBallDamage = 5;
-		// fireBalls = new ArrayList<FireBall>();
+		fireBalls = new ArrayList<FireBall>();
 
 		scratchDamage = 8;
 		scratchRange = 40;
@@ -213,6 +215,38 @@ public class Player extends Actor {
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
+		
+		if (currentAction == AnimationInfo.SCRATCHING.index) {
+			if (animation.hasPlayedOnce()) {
+				scratching = false;
+			}
+		}
+		
+		if (currentAction == AnimationInfo.FIREBALL.index) {
+			if (animation.hasPlayedOnce()) {
+				firing = false;
+			}
+		}
+		
+		fire+=1;
+		if(fire > maxFire) fire = maxFire;
+		if (firing && currentAction != AnimationInfo.FIREBALL.index) {
+			if (fire > fireCost) {
+				fire -= fireCost;
+				FireBall fb = new FireBall(tileMap, facingRight);
+				fb.setPosition(x, y);
+				fireBalls.add(fb);
+			}
+		}
+		
+		Iterator<FireBall> it = fireBalls.iterator();
+		while(it.hasNext()){
+			FireBall fb = it.next();
+			fb.update();
+			if (fb.shouldRemove()) {
+				it.remove();
+			}
+		}
 
 		// set animation
 		if (scratching) {
@@ -284,6 +318,10 @@ public class Player extends Actor {
 	public void draw(Graphics2D g) {
 
 		setMapPosition();
+		
+		for(FireBall fb: fireBalls) {
+			fb.draw(g);
+		}
 
 		// draw player
 		if (flinching) {
@@ -294,13 +332,21 @@ public class Player extends Actor {
 		}
 
 		if (facingRight) {
-			g.drawImage(animation.getImage(), (int) (x + xmap - width / 2),
-					(int) (y + ymap - height / 2), null);
+			g.drawImage(
+				animation.getImage(), 
+				(int) (x + xmap - width / 2),
+				(int) (y + ymap - height / 2), 
+				null
+			);
 		} else {
-			g.drawImage(animation.getImage(),
-					(int) (x + xmap - width / 2 + width),
-					(int) (y + ymap - height / 2), -width, height, null);
-
+			g.drawImage(
+				animation.getImage(),
+				(int) (x + xmap - width / 2 + width),
+				(int) (y + ymap - height / 2),
+				-width, 
+				height, 
+				null
+			);
 		}
 
 	}

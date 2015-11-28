@@ -51,11 +51,12 @@ public class TileMap {
 		numColsToDraw = GamePanel.WIDTH / tileSize + 2;
 		tween = 0.07;
 		tileFactory = new TileFactory() {
-			public Tile createTile(BufferedImage _tileSet, int _row, int _col,
-					int _tileSize) {
-				return new Tile(_tileSet.getSubimage(_col * _tileSize,
-						_row == 0 ? 0 : _tileSize, _tileSize, _tileSize),
-						_row == 0 ? Tile.NORMAL : Tile.BLOCKED);
+			public Tile createTile(BufferedImage _tileSet, int _row, int _col, int _tileSize) {
+				return new Tile(_tileSet.getSubimage(
+					_col * _tileSize,
+					_row == 0 ? 0 : _tileSize, 
+					_tileSize, _tileSize
+				), _row == 0 ? Tile.NORMAL : Tile.BLOCKED);
 			}
 		};
 	}
@@ -201,6 +202,14 @@ public class TileMap {
 
 		}
 
+	}
+
+	public int getNumRows() {
+		return numRows;
+	}
+
+	public int getNumCols() {
+		return numCols;
 	}
 
 }
