@@ -335,4 +335,9 @@ public class Player extends Actor {
 
 	}
 
+	public void checkAttack(List<Enemy> enemies) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -58,6 +58,8 @@ public class Level1State extends GameState {
 		
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 		
+		player.checkAttack(enemies);
+		
 		for (Enemy e: enemies) {
 			e.update();
 		}
