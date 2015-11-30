@@ -22,12 +22,9 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
 
 	// game thread
 	private Thread thread;
-	private boolean running, paused;
-	private static final double GAME_HERTZ = 60.0;
-	private static final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
-	private static final double TARGET_FPS = 120;
-	private static final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
-	private static final int MAX_UPDATES_BEFORE_REDNER = 1;
+	private boolean running;
+	private int FPS = 60;
+	private long targetTime = 1000 / FPS;
 
 	// image
 	private BufferedImage image;
@@ -58,55 +55,31 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
 
 	@Override
 	public void run() {
-		double lastUpdateTime = System.nanoTime();
-		double lastRenderTime = System.nanoTime();
-
-		int lastSecondTime = (int) (lastUpdateTime / 1000000000);
-
-		while (running) {
-			double now = System.nanoTime();
-			int updateCount = 0;
-
-			if (!paused) {
-				while (shouldUpdate(lastUpdateTime, now, updateCount)) {
-					update();
-					lastUpdateTime += TIME_BETWEEN_UPDATES;
-					updateCount++;
-				}
-
-				if (now - lastUpdateTime > TIME_BETWEEN_UPDATES) {
-					lastUpdateTime = now - TIME_BETWEEN_UPDATES;
-				}
-
-				draw();
-
-				render();
-
-				lastRenderTime = now;
-
-				int thisSecond = (int) (lastUpdateTime / 1000000000);
-				if (thisSecond > lastSecondTime) {
-					lastSecondTime = thisSecond;
-				}
-
-				while (shouldWait(lastUpdateTime, lastRenderTime, now)) {
-					Thread.yield();
-					try {
-						Thread.sleep(1);
-					} catch (Exception e) {
-					}
-					now = System.nanoTime();
-				}
+		long start;
+		long elapsed;
+		long wait;
+		
+		// game loop
+		while(running) {
+			
+			start = System.nanoTime();
+			
+			update();
+			draw();
+			render();
+			
+			elapsed = System.nanoTime() - start;
+			
+			wait = targetTime - elapsed / 1000000;
+			if(wait < 0) wait = 5;
+			
+			try {
+				Thread.sleep(wait);
+			}
+			catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
-	}
-
-	private boolean shouldWait(double lastUpdateTime, double lastRenderTime, double now) {
-		return (now - lastRenderTime) < TARGET_TIME_BETWEEN_RENDERS && (now - lastUpdateTime) < TIME_BETWEEN_UPDATES;
-	}
-
-	private boolean shouldUpdate(double lastUpdateTime, double now, int updateCount) {
-		return (now - lastUpdateTime) > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_REDNER;
 	}
 
 	private void update() {
