@@ -3,11 +3,14 @@ package com.github.jarlah.dragontale.tutorial.entity;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import com.github.jarlah.dragontale.tutorial.audio.AudioPlayer;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 
 @SuppressWarnings("unused")
@@ -39,7 +42,9 @@ public class Player extends Actor {
 	private boolean gliding;
 
 	// animations
-	private ArrayList<BufferedImage[]> sprites;
+	private List<BufferedImage[]> sprites;
+	
+	private Map<String, AudioPlayer> sfx;
 
 	/**
 	 * Its no necessarily obvious that all the animations has the same size.
@@ -119,6 +124,11 @@ public class Player extends Actor {
 		animation = new Animation();
 		
 		setCurrentAction(AnimationInfo.IDLE, 400);
+		
+		sfx = new HashMap<>();
+		sfx.put("jump", new AudioPlayer("SFX/jump.mp3"));
+		sfx.put("scratch", new AudioPlayer("SFX/scratch.mp3"));
+		sfx.put("fireball", new AudioPlayer("SFX/fireball.mp3"));
 	}
 
 	public int getHealth() {
@@ -179,11 +189,13 @@ public class Player extends Actor {
 		// cannot move while attacking, except in air
 		if ((currentAction == AnimationInfo.SCRATCHING.index || currentAction == AnimationInfo.FIREBALL.index)
 				&& !(jumping || falling)) {
+			sfx.get("fireball").play();
 			dx = 0;
 		}
 
 		// jumping
 		if (jumping && !falling) {
+			sfx.get("jump").play();
 			dy = jumpStart;
 			falling = true;
 		}
@@ -259,6 +271,7 @@ public class Player extends Actor {
 		// set animation
 		if (scratching) {
 			if (currentAction != AnimationInfo.SCRATCHING.index) {
+				sfx.get("scratch").play();
 				setCurrentAction(AnimationInfo.SCRATCHING, 50);
 			}
 		} else if (firing) {
