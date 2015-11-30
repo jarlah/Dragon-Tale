@@ -50,11 +50,13 @@ public class Player extends Actor {
 	 * Its no necessarily obvious that all the animations has the same size.
 	 */
 	enum AnimationInfo {
-		IDLE(0, 2, PLAYER_WIDTH, PLAYER_HEIGHT), WALKING(1, 8, PLAYER_WIDTH,
-				PLAYER_HEIGHT), JUMPING(2, 1, PLAYER_WIDTH, PLAYER_HEIGHT), FALLING(
-				3, 2, PLAYER_WIDTH, PLAYER_HEIGHT), GLIDING(4, 4, PLAYER_WIDTH,
-				PLAYER_HEIGHT), FIREBALL(5, 2, PLAYER_WIDTH, PLAYER_HEIGHT), SCRATCHING(
-				6, 5, 60, PLAYER_HEIGHT);
+		IDLE(0, 2, PLAYER_WIDTH, PLAYER_HEIGHT), 
+		WALKING(1, 8, PLAYER_WIDTH, PLAYER_HEIGHT), 
+		JUMPING(2, 1, PLAYER_WIDTH, PLAYER_HEIGHT), 
+		FALLING(3, 2, PLAYER_WIDTH, PLAYER_HEIGHT),
+		GLIDING(4, 4, PLAYER_WIDTH, PLAYER_HEIGHT), 
+		FIREBALL(5, 2, PLAYER_WIDTH, PLAYER_HEIGHT), 
+		SCRATCHING(6, 5, 60, PLAYER_HEIGHT);
 
 		int index, numFrames, width, height;
 
@@ -108,11 +110,7 @@ public class Player extends Actor {
 				AnimationInfo animation = animations[i];
 				BufferedImage[] bi = new BufferedImage[animation.numFrames];
 				for (int j = 0; j < animation.numFrames; j++) {
-					if (AnimationInfo.SCRATCHING != animation) {
-						bi[j] = spritesheet.getSubimage(j * width, i * height, width, height);
-					} else {
-						bi[j] = spritesheet.getSubimage(j * width * 2, i * height, animation.width, height);
-					}
+					bi[j] = spritesheet.getSubimage(j * animation.width, i * animation.height, animation.width, animation.height);
 				}
 				sprites.add(bi);
 			}
