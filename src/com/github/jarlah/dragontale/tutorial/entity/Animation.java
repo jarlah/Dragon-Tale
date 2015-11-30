@@ -11,16 +11,20 @@ public class Animation {
 	private long delay;
 
 	private boolean playedOnce;
+	
+	private int width, height;
 
 	public Animation() {
 		playedOnce = false;
 	}
 
-	public void setFrames(BufferedImage[] frames) {
+	public void setFrames(BufferedImage[] frames, int width, int height) {
 		this.frames = frames;
 		currentFrame = 0;
 		startTime = System.nanoTime();
 		playedOnce = false;
+		this.width = width;
+		this.height = height;
 	}
 
 	public void setDelay(long d) {
@@ -58,6 +62,14 @@ public class Animation {
 
 	public boolean hasPlayedOnce() {
 		return playedOnce;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 }

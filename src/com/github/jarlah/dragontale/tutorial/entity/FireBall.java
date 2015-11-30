@@ -41,7 +41,7 @@ public class FireBall extends Actor {
 			}
 			
 			animation = new Animation();
-			animation.setFrames(sprites);
+			animation.setFrames(sprites, width, height);
 			animation.setDelay(70);
 			
 			
@@ -53,7 +53,7 @@ public class FireBall extends Actor {
 	public void setHit() {
 		if (hit) return;
 		hit = true;
-		animation.setFrames(hitSprites);
+		animation.setFrames(hitSprites, width, height);
 		animation.setDelay(70);
 		dx = 0;
 	}

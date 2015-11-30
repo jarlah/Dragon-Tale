@@ -9,35 +9,45 @@ import com.github.jarlah.dragontale.tutorial.entity.Animation;
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 
-public class Slugger extends Enemy {
+public class RedBird extends Enemy{
 	private BufferedImage[] sprites;
 	
-	public Slugger(TileMap tm) {
+	public RedBird(TileMap tm) {
 		super(tm);
 		
-		moveSpeed = maxSpeed = 0.3;
-		fallSpeed = 0.2;
-		maxFallSpeed = 10.0;
-		
-		width = height = 30;
-		cwidth = cheight = 20;
+		moveSpeed = maxSpeed = 1.0;
+		fallSpeed = 0.0;
+		maxFallSpeed = 0.0;
 		
 		health = maxHealth = 2;
 		damage = 1;
 		
 		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/slugger.gif"));
-			sprites = new BufferedImage[3];
-			for (int i = 0; i < sprites.length; i++) {
-				sprites[i] = spriteSheet.getSubimage(i * width, 0, width, height);	
-			}
+			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/bird-sprite.png"));
+			width = cwidth = spriteSheet.getWidth() / 5;
+			height = cheight = spriteSheet.getHeight() / 3;
+			sprites = new BufferedImage[14];
+			sprites[0] = spriteSheet.getSubimage(0, 0, width, height);
+			sprites[1] = spriteSheet.getSubimage(30, 0, width, height);
+			sprites[2] = spriteSheet.getSubimage(60, 0, width, height);
+			sprites[3] = spriteSheet.getSubimage(90, 0, width, height);
+			sprites[4] = spriteSheet.getSubimage(120, 0, width, height);
+			sprites[5] = spriteSheet.getSubimage(0, 27, width, height);
+			sprites[6] = spriteSheet.getSubimage(30, 27, width, height);
+			sprites[7] = spriteSheet.getSubimage(60, 27, width, height);
+			sprites[8] = spriteSheet.getSubimage(90, 27, width, height);
+			sprites[9] = spriteSheet.getSubimage(120, 27, width, height);
+			sprites[10] = spriteSheet.getSubimage(0, 55, width, height-1);
+			sprites[11] = spriteSheet.getSubimage(30, 55, width, height-1);
+			sprites[12] = spriteSheet.getSubimage(60, 55, width, height-1);
+			sprites[13] = spriteSheet.getSubimage(90, 55, width, height-1);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		animation = new Animation();
 		animation.setFrames(sprites, width, height);
-		animation.setDelay(300);
+		animation.setDelay(60);
 		
 		right = true;
 		facingRight = true;

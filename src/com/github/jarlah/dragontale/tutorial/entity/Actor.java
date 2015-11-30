@@ -115,9 +115,9 @@ public abstract class Actor {
 		} else {
 			g.drawImage(
 				animation.getImage(),
-				(int) (x + xmap - width / 2 + width),
+				(int) (x + xmap - width / 2 + width ),
 				(int) (y + ymap - height / 2),
-				-width, 
+				-width , 
 				height, 
 				null
 			);
@@ -244,5 +244,13 @@ public abstract class Actor {
 		return x + xmap + width < 0 || x + xmap - width > GamePanel.WIDTH
 				|| y + ymap + height < 0
 				|| y + ymap - height > GamePanel.HEIGHT;
+	}
+
+	public double getXmap() {
+		return xmap;
+	}
+
+	public double getYmap() {
+		return ymap;
 	}
 }

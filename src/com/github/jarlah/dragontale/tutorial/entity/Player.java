@@ -41,6 +41,9 @@ public class Player extends Actor {
 	// animations
 	private ArrayList<BufferedImage[]> sprites;
 
+	/**
+	 * Its no necessarily obvious that all the animations has the same size.
+	 */
 	enum AnimationInfo {
 		IDLE(0, 2, PLAYER_WIDTH, PLAYER_HEIGHT), WALKING(1, 8, PLAYER_WIDTH,
 				PLAYER_HEIGHT), JUMPING(2, 1, PLAYER_WIDTH, PLAYER_HEIGHT), FALLING(
@@ -117,7 +120,10 @@ public class Player extends Actor {
 
 		animation = new Animation();
 		currentAction = AnimationInfo.IDLE.index;
-		animation.setFrames(sprites.get(AnimationInfo.IDLE.index));
+		animation
+				.setFrames(sprites.get(AnimationInfo.IDLE.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 		animation.setDelay(400);
 
 	}
@@ -215,21 +221,22 @@ public class Player extends Actor {
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
-		
+
 		if (currentAction == AnimationInfo.SCRATCHING.index) {
 			if (animation.hasPlayedOnce()) {
 				scratching = false;
 			}
 		}
-		
+
 		if (currentAction == AnimationInfo.FIREBALL.index) {
 			if (animation.hasPlayedOnce()) {
 				firing = false;
 			}
 		}
-		
-		fire+=1;
-		if(fire > maxFire) fire = maxFire;
+
+		fire += 1;
+		if (fire > maxFire)
+			fire = maxFire;
 		if (firing && currentAction != AnimationInfo.FIREBALL.index) {
 			if (fire > fireCost) {
 				fire -= fireCost;
@@ -238,9 +245,9 @@ public class Player extends Actor {
 				fireBalls.add(fb);
 			}
 		}
-		
+
 		Iterator<FireBall> it = fireBalls.iterator();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			FireBall fb = it.next();
 			fb.update();
 			if (fb.shouldRemove()) {
@@ -252,15 +259,19 @@ public class Player extends Actor {
 		if (scratching) {
 			if (currentAction != AnimationInfo.SCRATCHING.index) {
 				currentAction = AnimationInfo.SCRATCHING.index;
-				animation
-						.setFrames(sprites.get(AnimationInfo.SCRATCHING.index));
+				animation.setFrames(
+						sprites.get(AnimationInfo.SCRATCHING.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 				animation.setDelay(50);
 				width = 60;
 			}
 		} else if (firing) {
 			if (currentAction != AnimationInfo.FIREBALL.index) {
 				currentAction = AnimationInfo.FIREBALL.index;
-				animation.setFrames(sprites.get(AnimationInfo.FIREBALL.index));
+				animation.setFrames(sprites.get(AnimationInfo.FIREBALL.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 				animation.setDelay(100);
 				width = 30;
 			}
@@ -268,35 +279,45 @@ public class Player extends Actor {
 			if (gliding) {
 				if (currentAction != AnimationInfo.GLIDING.index) {
 					currentAction = AnimationInfo.GLIDING.index;
-					animation.setFrames(sprites
-							.get(AnimationInfo.GLIDING.index));
+					animation.setFrames(
+							sprites.get(AnimationInfo.GLIDING.index),
+							AnimationInfo.SCRATCHING.width,
+							AnimationInfo.SCRATCHING.height);
 					animation.setDelay(100);
 					width = 30;
 				}
 			} else if (currentAction != AnimationInfo.FALLING.index) {
 				currentAction = AnimationInfo.FALLING.index;
-				animation.setFrames(sprites.get(AnimationInfo.FALLING.index));
+				animation.setFrames(sprites.get(AnimationInfo.FALLING.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 				animation.setDelay(100);
 				width = 30;
 			}
 		} else if (dy < 0) {
 			if (currentAction != AnimationInfo.JUMPING.index) {
 				currentAction = AnimationInfo.JUMPING.index;
-				animation.setFrames(sprites.get(AnimationInfo.JUMPING.index));
+				animation.setFrames(sprites.get(AnimationInfo.JUMPING.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 				animation.setDelay(-1);
 				width = 30;
 			}
 		} else if (left || right) {
 			if (currentAction != AnimationInfo.WALKING.index) {
 				currentAction = AnimationInfo.WALKING.index;
-				animation.setFrames(sprites.get(AnimationInfo.WALKING.index));
+				animation.setFrames(sprites.get(AnimationInfo.WALKING.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 				animation.setDelay(40);
 				width = 30;
 			}
 		} else {
 			if (currentAction != AnimationInfo.IDLE.index) {
 				currentAction = AnimationInfo.IDLE.index;
-				animation.setFrames(sprites.get(AnimationInfo.IDLE.index));
+				animation.setFrames(sprites.get(AnimationInfo.IDLE.index),
+						AnimationInfo.SCRATCHING.width,
+						AnimationInfo.SCRATCHING.height);
 				animation.setDelay(400);
 				width = 30;
 			}
@@ -318,8 +339,8 @@ public class Player extends Actor {
 	public void draw(Graphics2D g) {
 
 		setMapPosition();
-		
-		for(FireBall fb: fireBalls) {
+
+		for (FireBall fb : fireBalls) {
 			fb.draw(g);
 		}
 
@@ -336,8 +357,29 @@ public class Player extends Actor {
 	}
 
 	public void checkAttack(List<Enemy> enemies) {
-		// TODO Auto-generated method stub
-		
+		for (Enemy e : enemies) {
+			if (scratching) {
+				if (facingRight) {
+					if (e.getx() > x && e.getx() < x + scratchRange
+							&& e.gety() > y - height / 2
+							&& e.gety() < y + height / 2) {
+						e.hit(scratchDamage);
+					}
+				} else if (e.getx() < x && e.getx() > x - scratchRange
+						&& e.gety() > y - height / 2
+						&& e.gety() < y + height / 2) {
+					e.hit(scratchDamage);
+				}
+			}
+
+			for (FireBall fb : fireBalls) {
+				if (fb.intersects(e)) {
+					e.hit(fireBallDamage);
+					fb.setHit();
+					break;
+				}
+			}
+		}
 	}
 
 }

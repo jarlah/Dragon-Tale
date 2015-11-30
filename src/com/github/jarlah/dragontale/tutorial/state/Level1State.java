@@ -1,13 +1,17 @@
 package com.github.jarlah.dragontale.tutorial.state;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
+import com.github.jarlah.dragontale.tutorial.entity.Explosion;
 import com.github.jarlah.dragontale.tutorial.entity.HUD;
 import com.github.jarlah.dragontale.tutorial.entity.Player;
+import com.github.jarlah.dragontale.tutorial.entity.enemies.RedBird;
 import com.github.jarlah.dragontale.tutorial.entity.enemies.Slugger;
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
 import com.github.jarlah.dragontale.tutorial.tilemap.Background;
@@ -21,11 +25,14 @@ public class Level1State extends GameState {
 	
 	private List<Enemy> enemies;
 	
+	private List<Explosion> explosions;
+	
 	private HUD hud;
+	
+	private volatile boolean initialized;
 
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
-		init();
 	}
 
 	public void init() {
@@ -41,43 +48,94 @@ public class Level1State extends GameState {
 		player = new Player(tileMap);
 		player.setPosition(100, 100);
 		
-		enemies = new ArrayList<>();
-		Slugger s = new Slugger(tileMap);
-		s.setPosition(100, 100);
-		enemies.add(s);
+		populateEnemies();
+		
+		explosions = new ArrayList<Explosion>();
 
 		hud = new HUD(player);
+		
+		initialized = true;
+	}
+	
+	private void populateEnemies() {
+		enemies = new ArrayList<Enemy>();
+		
+		for (Point point: new Point[] {
+			new Point(50, 200),
+			new Point(860, 200),
+			new Point(1525, 200),
+			new Point(1680, 200),
+			new Point(1800, 200)
+		}) {
+			Slugger s = new Slugger(tileMap);
+			s.setPosition(point.getX(), point.getY());
+			enemies.add(s);
+		}	
+		
+		RedBird s = new RedBird(tileMap);
+		s.setPosition(100, 50);
+		enemies.add(s);
 	}
 
 	public void update() {
+		if (!initialized) return;
 
-		// update player
 		player.update();
-		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getx(),
-				GamePanel.HEIGHT / 2 - player.gety());
+		
+		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getx(), GamePanel.HEIGHT / 2 - player.gety());
 		
 		bg.setPosition(tileMap.getx(), tileMap.gety());
 		
 		player.checkAttack(enemies);
 		
-		for (Enemy e: enemies) {
+		updateEnemies();
+		
+		updateExplosions();
+	}
+
+	private void updateEnemies() {
+		for (int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
 			e.update();
+			if (e.isDead()) {
+				enemies.remove(i);
+				i--;
+				final Explosion expl = new Explosion(e.getx(), e.gety());
+				expl.setMapPosition((int)e.getXmap(),(int)e.getYmap());
+				explosions.add(expl);
+			}
+		}
+	}
+
+	private void updateExplosions() {
+		for (int i = 0; i < explosions.size(); i++) {
+			Explosion e = explosions.get(i);
+			e.update();
+			if (e.shouldRemove()) {
+				explosions.remove(i);
+				i--;
+			}
 		}
 	}
 
 	public void draw(Graphics2D g) {
-
+		if (!initialized) return;
+		
 		// draw bg
 		bg.draw(g);
 
 		// draw tilemap
 		tileMap.draw(g);
-
+		
 		// draw player
 		player.draw(g);
 
-		for (Enemy e: enemies) {
-			e.draw(g);
+		for (Enemy en: enemies) {
+			en.draw(g);
+		}
+
+		for (Explosion expl: explosions) {
+			expl.draw(g);
 		}
 		
 		hud.draw(g);

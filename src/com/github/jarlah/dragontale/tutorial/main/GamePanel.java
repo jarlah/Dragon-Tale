@@ -1,18 +1,19 @@
 package com.github.jarlah.dragontale.tutorial.main;
 
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JPanel;
 
 import com.github.jarlah.dragontale.tutorial.state.GameStateManager;
 
 @SuppressWarnings("serial")
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends Canvas implements Runnable, KeyListener {
 
 	// dimensions
 	public static final int WIDTH = 320;
@@ -26,11 +27,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private static final double TIME_BETWEEN_UPDATES = 1000000000 / GAME_HERTZ;
 	private static final double TARGET_FPS = 120;
 	private static final double TARGET_TIME_BETWEEN_RENDERS = 1000000000 / TARGET_FPS;
-	private static final int MAX_UPDATES_BEFORE_REDNER = 5;
+	private static final int MAX_UPDATES_BEFORE_REDNER = 1;
 
 	// image
 	private BufferedImage image;
-	private Graphics2D g;
+	private Graphics2D g2d;
 
 	// game state manager
 	private GameStateManager gsm;
@@ -52,14 +53,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 	}
 
 	private void init() {
-
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		g = (Graphics2D) image.getGraphics();
-
+		g2d = (Graphics2D) image.getGraphics();
 		running = true;
-
 		gsm = new GameStateManager();
-
 	}
 
 	@Override
@@ -76,8 +73,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 			int updateCount = 0;
 
 			if (!paused) {
-				while (now - lastUpdateTime > TIME_BETWEEN_UPDATES
-						&& updateCount < MAX_UPDATES_BEFORE_REDNER) {
+				while (shouldUpdate(lastUpdateTime, now, updateCount)) {
 					update();
 					lastUpdateTime += TIME_BETWEEN_UPDATES;
 					updateCount++;
@@ -89,7 +85,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
 				draw();
 
-				drawToScreen();
+				render();
 
 				lastRenderTime = now;
 
@@ -98,8 +94,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 					lastSecondTime = thisSecond;
 				}
 
-				while ((now - lastRenderTime) < TARGET_TIME_BETWEEN_RENDERS
-						&& (now - lastUpdateTime) < TIME_BETWEEN_UPDATES) {
+				while (shouldWait(lastUpdateTime, lastRenderTime, now)) {
 					Thread.yield();
 					try {
 						Thread.sleep(1);
@@ -111,18 +106,39 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		}
 	}
 
+	private boolean shouldWait(double lastUpdateTime, double lastRenderTime, double now) {
+		return (now - lastRenderTime) < TARGET_TIME_BETWEEN_RENDERS && (now - lastUpdateTime) < TIME_BETWEEN_UPDATES;
+	}
+
+	private boolean shouldUpdate(double lastUpdateTime, double now, int updateCount) {
+		return (now - lastUpdateTime) > TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_REDNER;
+	}
+
 	private void update() {
 		gsm.update();
 	}
 
+	/**
+	 * Draws on the cached graphics object
+	 */
 	private void draw() {
-		gsm.draw(g);
+		gsm.draw(g2d);
 	}
 
-	private void drawToScreen() {
-		Graphics g2 = getGraphics();
-		g2.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
-		g2.dispose();
+	/**
+	 * Does the actual rendering to the screen
+	 */
+	private void render() {
+		BufferStrategy bs = getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+		Toolkit.getDefaultToolkit().sync();
+		g.dispose();
+		bs.show();
 	}
 
 	public void keyTyped(KeyEvent key) {
