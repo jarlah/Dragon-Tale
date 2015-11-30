@@ -44,7 +44,7 @@ public class AudioPlayer {
 	
 	public boolean isPlaying() {
 		if (clip == null) return false;
-		synchronized(this){
+		synchronized(AudioPlayer.this){
 			return clip.isActive();
 		}
 	}
@@ -52,7 +52,7 @@ public class AudioPlayer {
 	public void play() {
 		SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
-		    	synchronized(this) {
+		    	synchronized(AudioPlayer.this) {
 		    		if (clip == null) init();
 		    		stop();
 			    	clip.setFramePosition(0);
@@ -65,14 +65,14 @@ public class AudioPlayer {
 
 	public void stop() {
 		if (clip == null) return;
-		synchronized(this){
+		synchronized(AudioPlayer.class){
 			if (clip.isRunning()) clip.stop();
 		}
 	}
 	
 	public void close() {
 		if (clip == null) return;
-		synchronized(this){
+		synchronized(AudioPlayer.class){
 			stop();
 			clip.close();
 		}
@@ -81,7 +81,7 @@ public class AudioPlayer {
 	public void playLoop() {
 		SwingUtilities.invokeLater(new Runnable() {
 		    public void run() {
-		    	synchronized(this) {
+		    	synchronized(AudioPlayer.this) {
 		    		if (clip == null) init();
 					stop();
 					clip.setFramePosition(0);
