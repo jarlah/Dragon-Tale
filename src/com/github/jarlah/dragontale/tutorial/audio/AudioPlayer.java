@@ -5,11 +5,19 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.swing.SwingUtilities;
 
 public class AudioPlayer {
 	private Clip clip;
+	private String link;
+	private float volume;
 
 	public AudioPlayer(String link, float volume) {
+		this.link = link;
+		this.volume = volume;
+	}
+
+	private void init() {
 		try {
 			AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(link));
 			AudioFormat baseFormat = ais.getFormat();
@@ -26,8 +34,7 @@ public class AudioPlayer {
 			clip = AudioSystem.getClip();
 			clip.open(dais);
 			if (volume != -1) {
-			FloatControl gainControl = 
-				    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 				gainControl.setValue(volume);
 			}
 		} catch(Exception e) {
@@ -36,30 +43,49 @@ public class AudioPlayer {
 	}
 	
 	public boolean isPlaying() {
-		return clip.isActive();
+		synchronized(this){
+			return clip.isActive();
+		}
 	}
 	
 	public void play() {
-		if (clip == null) return;
-		stop();
-		clip.setFramePosition(0);
-		clip.start();
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+		    	synchronized(this) {
+		    		if (clip == null) init();
+		    		stop();
+			    	clip.setFramePosition(0);
+			    	clip.start();
+		    	}
+		    	
+		    }
+		 });
 	}
 
 	public void stop() {
-		if (clip.isRunning()) clip.stop();
+		synchronized(this){
+			if (clip.isRunning()) clip.stop();
+		}
 	}
 	
 	public void close() {
-		stop();
-		clip.close();
+		synchronized(this){
+			stop();
+			clip.close();
+		}
 	}
 
 	public void playLoop() {
-		if (clip == null) return;
-		stop();
-		clip.setFramePosition(0);
-		clip.setLoopPoints(0, clip.getFrameLength()-10);
-		clip.loop(-1);
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+		    	synchronized(this) {
+		    		if (clip == null) init();
+					stop();
+					clip.setFramePosition(0);
+					clip.setLoopPoints(0, clip.getFrameLength()-10);
+					clip.loop(-1);
+		    	}
+		    }
+		 });
 	}
 }
