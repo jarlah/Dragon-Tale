@@ -102,7 +102,7 @@ public class Level1State extends GameState {
 		
 		updateExplosions();
 		
-		if (player.isDead()) {
+		if (player.isDead() || player.gety() > GamePanel.HEIGHT) {
 			bgMusic.stop();
 			gsm.setState(GameStateManager.GAMEOVER);
 		}
