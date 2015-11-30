@@ -1,44 +1,61 @@
 package com.github.jarlah.dragontale.tutorial.state;
 
-import java.util.ArrayList;
 
 public class GameStateManager {
 
-	private ArrayList<GameState> gameStates;
+	private GameState[] gameStates;
 	private int currentState;
 
+	public static final int NUMGAMESTATES = 2;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
 
 	public GameStateManager() {
 
-		gameStates = new ArrayList<GameState>();
+		gameStates = new GameState[NUMGAMESTATES];
 
 		currentState = MENUSTATE;
-		gameStates.add(new MenuState(this));
-		gameStates.add(new Level1State(this));
+		
+		loadState(currentState);
+	}
 
+	private void loadState(int state) {
+		if (state == MENUSTATE) {
+			gameStates[state] = new MenuState(this);
+		}
+		if (state == LEVEL1STATE) {
+			gameStates[state] = new Level1State(this);
+		}
+	}
+	
+	public void unloadState(int state) {
+		gameStates[state] = null;
 	}
 
 	public void setState(int state) {
+		unloadState(state);
 		currentState = state;
-		gameStates.get(currentState).init();
+		loadState(state);
 	}
 
 	public void update() {
-		gameStates.get(currentState).update();
+		if (gameStates[currentState] == null) return;
+		gameStates[currentState].update();
 	}
 
 	public void draw(java.awt.Graphics2D g) {
-		gameStates.get(currentState).draw(g);
+		if (gameStates[currentState] == null) return;
+		gameStates[currentState].draw(g);
 	}
 
 	public void keyPressed(int k) {
-		gameStates.get(currentState).keyPressed(k);
+		if (gameStates[currentState] == null) return;
+		gameStates[currentState].keyPressed(k);
 	}
 
 	public void keyReleased(int k) {
-		gameStates.get(currentState).keyReleased(k);
+		if (gameStates[currentState] == null) return;
+		gameStates[currentState].keyReleased(k);
 	}
 
 }

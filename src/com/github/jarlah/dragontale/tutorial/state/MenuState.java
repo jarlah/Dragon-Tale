@@ -36,10 +36,6 @@ public class MenuState extends GameState {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-	}
-
-	public void init() {
 	}
 
 	public void update() {

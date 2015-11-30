@@ -28,15 +28,9 @@ public class Level1State extends GameState {
 	private List<Explosion> explosions;
 	
 	private HUD hud;
-	
-	private volatile boolean initialized;
 
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
-	}
-
-	public void init() {
-
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("Tilesets/grasstileset.gif");
 		tileMap.loadMap("Maps/level1-1.map");
@@ -53,8 +47,6 @@ public class Level1State extends GameState {
 		explosions = new ArrayList<Explosion>();
 
 		hud = new HUD(player);
-		
-		initialized = true;
 	}
 	
 	private void populateEnemies() {
@@ -82,8 +74,6 @@ public class Level1State extends GameState {
 	}
 
 	public void update() {
-		if (!initialized) return;
-
 		player.update();
 		
 		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getx(), GamePanel.HEIGHT / 2 - player.gety());
@@ -123,8 +113,6 @@ public class Level1State extends GameState {
 	}
 
 	public void draw(Graphics2D g) {
-		if (!initialized) return;
-		
 		// draw bg
 		bg.draw(g);
 

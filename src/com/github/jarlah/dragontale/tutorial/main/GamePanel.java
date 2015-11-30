@@ -41,28 +41,23 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
 		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		setFocusable(true);
 		requestFocus();
+		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		g2d = (Graphics2D) image.getGraphics();
+		running = true;
+		gsm = new GameStateManager();
+		addKeyListener(this);
 	}
 
 	public void addNotify() {
 		super.addNotify();
 		if (thread == null) {
 			thread = new Thread(this);
-			addKeyListener(this);
 			thread.start();
 		}
 	}
 
-	private void init() {
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		g2d = (Graphics2D) image.getGraphics();
-		running = true;
-		gsm = new GameStateManager();
-	}
-
 	@Override
 	public void run() {
-		init();
-
 		double lastUpdateTime = System.nanoTime();
 		double lastRenderTime = System.nanoTime();
 
