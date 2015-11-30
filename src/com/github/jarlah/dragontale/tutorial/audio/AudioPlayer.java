@@ -4,11 +4,12 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 
 public class AudioPlayer {
 	private Clip clip;
 
-	public AudioPlayer(String link) {
+	public AudioPlayer(String link, float volume) {
 		try {
 			AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(link));
 			AudioFormat baseFormat = ais.getFormat();
@@ -24,6 +25,11 @@ public class AudioPlayer {
 			AudioInputStream dais = AudioSystem.getAudioInputStream(decodeFormat, ais);
 			clip = AudioSystem.getClip();
 			clip.open(dais);
+			if (volume != -1) {
+			FloatControl gainControl = 
+				    (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+				gainControl.setValue(volume);
+			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

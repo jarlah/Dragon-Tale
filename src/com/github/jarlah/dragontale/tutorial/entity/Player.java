@@ -126,9 +126,10 @@ public class Player extends Actor {
 		setCurrentAction(AnimationInfo.IDLE, 400);
 		
 		sfx = new HashMap<>();
-		sfx.put("jump", new AudioPlayer("SFX/jump.mp3"));
-		sfx.put("scratch", new AudioPlayer("SFX/scratch.mp3"));
-		sfx.put("fireball", new AudioPlayer("SFX/fireball.mp3"));
+		sfx.put("jump", new AudioPlayer("SFX/jump.mp3", -1f));
+		sfx.put("scratch", new AudioPlayer("SFX/scratch.mp3", -1f));
+		sfx.put("fireball", new AudioPlayer("SFX/fireball.mp3", -1f));
+		sfx.put("explosion", new AudioPlayer("SFX/explosion.mp3", -15f));
 	}
 
 	public int getHealth() {
@@ -249,6 +250,7 @@ public class Player extends Actor {
 				FireBall fb = new FireBall(tileMap, facingRight);
 				fb.setPosition(x, y);
 				fireBalls.add(fb);
+				sfx.get("fireball").play();
 			}
 		}
 
@@ -359,6 +361,7 @@ public class Player extends Actor {
 			for (FireBall fb : fireBalls) {
 				if (fb.intersects(e)) {
 					e.hit(fireBallDamage);
+					if (e.isDead()) sfx.get("explosion").play();
 					fb.setHit();
 					break;
 				}
