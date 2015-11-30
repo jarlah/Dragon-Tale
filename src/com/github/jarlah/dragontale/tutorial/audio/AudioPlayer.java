@@ -43,6 +43,7 @@ public class AudioPlayer {
 	}
 	
 	public boolean isPlaying() {
+		if (clip == null) return false;
 		synchronized(this){
 			return clip.isActive();
 		}
@@ -63,12 +64,14 @@ public class AudioPlayer {
 	}
 
 	public void stop() {
+		if (clip == null) return;
 		synchronized(this){
 			if (clip.isRunning()) clip.stop();
 		}
 	}
 	
 	public void close() {
+		if (clip == null) return;
 		synchronized(this){
 			stop();
 			clip.close();

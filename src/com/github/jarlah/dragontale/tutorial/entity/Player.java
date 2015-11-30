@@ -13,7 +13,6 @@ import javax.imageio.ImageIO;
 import com.github.jarlah.dragontale.tutorial.audio.AudioPlayer;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 
-@SuppressWarnings("unused")
 public class Player extends Actor {
 	private static final int PLAYER_WIDTH = 30;
 	private static final int PLAYER_HEIGHT = 30;
@@ -194,8 +193,11 @@ public class Player extends Actor {
 		// cannot move while attacking, except in air
 		if ((currentAction == AnimationInfo.SCRATCHING.index || currentAction == AnimationInfo.FIREBALL.index)
 				&& !(jumping || falling)) {
-			sfx.get("fireball").play();
 			dx = 0;
+		}
+		
+		if (currentAction == AnimationInfo.FIREBALL.index) {
+			sfx.get("fireball").play();
 		}
 
 		// jumping
