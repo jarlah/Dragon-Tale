@@ -23,7 +23,7 @@ public class RedBird extends Enemy{
 		damage = 1;
 		
 		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/bird-sprite.png"));
+			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/redbird.png"));
 			width = cwidth = spriteSheet.getWidth() / 5;
 			height = cheight = spriteSheet.getHeight() / 3;
 			sprites = new BufferedImage[14];

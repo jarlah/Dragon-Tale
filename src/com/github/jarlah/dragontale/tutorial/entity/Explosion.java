@@ -18,7 +18,7 @@ public class Explosion {
 		this.width = 65;
 		
 		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/explosion2.png"));
+			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/explosion.png"));
 			sprites = new BufferedImage[5];
 			for (int i = 0; i < sprites.length; i++) {
 				sprites[i] = spriteSheet.getSubimage(
