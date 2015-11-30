@@ -122,8 +122,8 @@ public class Player extends Actor {
 		currentAction = AnimationInfo.IDLE.index;
 		animation
 				.setFrames(sprites.get(AnimationInfo.IDLE.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
+						AnimationInfo.IDLE.width,
+						AnimationInfo.IDLE.height);
 		animation.setDelay(400);
 
 	}
@@ -270,8 +270,8 @@ public class Player extends Actor {
 			if (currentAction != AnimationInfo.FIREBALL.index) {
 				currentAction = AnimationInfo.FIREBALL.index;
 				animation.setFrames(sprites.get(AnimationInfo.FIREBALL.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
+						AnimationInfo.FIREBALL.width,
+						AnimationInfo.FIREBALL.height);
 				animation.setDelay(100);
 				width = 30;
 			}
@@ -281,16 +281,16 @@ public class Player extends Actor {
 					currentAction = AnimationInfo.GLIDING.index;
 					animation.setFrames(
 							sprites.get(AnimationInfo.GLIDING.index),
-							AnimationInfo.SCRATCHING.width,
-							AnimationInfo.SCRATCHING.height);
+							AnimationInfo.GLIDING.width,
+							AnimationInfo.GLIDING.height);
 					animation.setDelay(100);
 					width = 30;
 				}
 			} else if (currentAction != AnimationInfo.FALLING.index) {
 				currentAction = AnimationInfo.FALLING.index;
 				animation.setFrames(sprites.get(AnimationInfo.FALLING.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
+						AnimationInfo.FALLING.width,
+						AnimationInfo.FALLING.height);
 				animation.setDelay(100);
 				width = 30;
 			}
@@ -298,8 +298,8 @@ public class Player extends Actor {
 			if (currentAction != AnimationInfo.JUMPING.index) {
 				currentAction = AnimationInfo.JUMPING.index;
 				animation.setFrames(sprites.get(AnimationInfo.JUMPING.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
+						AnimationInfo.JUMPING.width,
+						AnimationInfo.JUMPING.height);
 				animation.setDelay(-1);
 				width = 30;
 			}
@@ -307,8 +307,8 @@ public class Player extends Actor {
 			if (currentAction != AnimationInfo.WALKING.index) {
 				currentAction = AnimationInfo.WALKING.index;
 				animation.setFrames(sprites.get(AnimationInfo.WALKING.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
+						AnimationInfo.WALKING.width,
+						AnimationInfo.WALKING.height);
 				animation.setDelay(40);
 				width = 30;
 			}
@@ -316,8 +316,8 @@ public class Player extends Actor {
 			if (currentAction != AnimationInfo.IDLE.index) {
 				currentAction = AnimationInfo.IDLE.index;
 				animation.setFrames(sprites.get(AnimationInfo.IDLE.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
+						AnimationInfo.IDLE.width,
+						AnimationInfo.IDLE.height);
 				animation.setDelay(400);
 				width = 30;
 			}

@@ -4,13 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.entity.Explosion;
 import com.github.jarlah.dragontale.tutorial.entity.HUD;
 import com.github.jarlah.dragontale.tutorial.entity.Player;
+import com.github.jarlah.dragontale.tutorial.entity.enemies.Bahamut;
 import com.github.jarlah.dragontale.tutorial.entity.enemies.RedBird;
 import com.github.jarlah.dragontale.tutorial.entity.enemies.Slugger;
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
@@ -46,7 +46,7 @@ public class Level1State extends GameState {
 		bg = new Background("Backgrounds/grassbg1.gif", 0.1);
 
 		player = new Player(tileMap);
-		player.setPosition(100, 100);
+		player.setPosition(300, 100);
 		
 		populateEnemies();
 		
@@ -61,7 +61,7 @@ public class Level1State extends GameState {
 		enemies = new ArrayList<Enemy>();
 		
 		for (Point point: new Point[] {
-			new Point(50, 200),
+			//new Point(50, 200),
 			new Point(860, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),
@@ -75,6 +75,10 @@ public class Level1State extends GameState {
 		RedBird s = new RedBird(tileMap);
 		s.setPosition(100, 50);
 		enemies.add(s);
+		
+		Bahamut b = new Bahamut(tileMap);
+		b.setPosition(100, 50);
+		enemies.add(b);
 	}
 
 	public void update() {
@@ -126,13 +130,13 @@ public class Level1State extends GameState {
 
 		// draw tilemap
 		tileMap.draw(g);
-		
-		// draw player
-		player.draw(g);
 
 		for (Enemy en: enemies) {
 			en.draw(g);
 		}
+		
+		// draw player
+		player.draw(g);
 
 		for (Explosion expl: explosions) {
 			expl.draw(g);
