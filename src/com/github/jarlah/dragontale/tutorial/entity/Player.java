@@ -128,6 +128,7 @@ public class Player extends Actor {
 		sfx.put("scratch", new AudioPlayer("SFX/scratch.mp3", -1f));
 		sfx.put("fireball", new AudioPlayer("SFX/fireball.mp3", -1f));
 		sfx.put("explosion", new AudioPlayer("SFX/explosion.mp3", -15f));
+		sfx.put("gliding", new AudioPlayer("SFX/gliding.mp3", -1f));
 	}
 
 	public int getHealth() {
@@ -201,11 +202,13 @@ public class Player extends Actor {
 
 		// falling
 		if (falling) {
-
-			if (dy > 0 && gliding)
+			
+			if (dy > 0 && gliding) {
+				
 				dy += fallSpeed * 0.1;
-			else
+			} else {
 				dy += fallSpeed;
+			}
 
 			if (dy > 0)
 				jumping = false;

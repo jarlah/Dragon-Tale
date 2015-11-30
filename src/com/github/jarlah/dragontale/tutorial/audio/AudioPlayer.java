@@ -35,6 +35,10 @@ public class AudioPlayer {
 		}
 	}
 	
+	public boolean isPlaying() {
+		return clip.isActive();
+	}
+	
 	public void play() {
 		if (clip == null) return;
 		stop();
@@ -42,7 +46,7 @@ public class AudioPlayer {
 		clip.start();
 	}
 
-	private void stop() {
+	public void stop() {
 		if (clip.isRunning()) clip.stop();
 	}
 	
