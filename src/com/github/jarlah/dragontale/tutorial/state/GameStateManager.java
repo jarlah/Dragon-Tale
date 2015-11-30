@@ -6,9 +6,11 @@ public class GameStateManager {
 	private GameState[] gameStates;
 	private int currentState;
 
-	public static final int NUMGAMESTATES = 2;
+	public static final int NUMGAMESTATES = 4;
 	public static final int MENUSTATE = 0;
 	public static final int LEVEL1STATE = 1;
+	public static final int LEVELCOMPLETE = 2;
+	public static final int GAMEOVER = 3;
 
 	public GameStateManager() {
 
@@ -25,6 +27,12 @@ public class GameStateManager {
 		}
 		if (state == LEVEL1STATE) {
 			gameStates[state] = new Level1State(this);
+		}
+		if (state == LEVELCOMPLETE) {
+			gameStates[state] = new LevelCompleteState(this);
+		}
+		if (state == GAMEOVER) {
+			gameStates[state] = new GameOverState(this);
 		}
 	}
 	

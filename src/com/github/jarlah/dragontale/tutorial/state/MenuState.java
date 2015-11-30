@@ -20,9 +20,8 @@ public class MenuState extends GameState {
 	private Font font;
 
 	public MenuState(GameStateManager gsm) {
-
-		this.gsm = gsm;
-
+		super(gsm);
+		
 		try {
 
 			bg = new Background("Backgrounds/menubg.gif", 1);

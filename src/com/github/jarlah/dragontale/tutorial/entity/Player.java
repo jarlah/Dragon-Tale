@@ -388,4 +388,8 @@ public class Player extends Actor {
 		flinchTimer = System.nanoTime();
  	}
 
+	public boolean isDead() {
+		return dead;
+	}
+
 }

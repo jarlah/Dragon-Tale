@@ -33,7 +33,8 @@ public class Level1State extends GameState {
 	private AudioPlayer bgMusic;
 
 	public Level1State(GameStateManager gsm) {
-		this.gsm = gsm;
+		super(gsm);
+		
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("Tilesets/grasstileset.gif");
 		tileMap.loadMap("Maps/level1-1.map");
@@ -43,7 +44,7 @@ public class Level1State extends GameState {
 		bg = new Background("Backgrounds/grassbg1.gif", 0.1);
 
 		player = new Player(tileMap);
-		player.setPosition(400, 100);
+		player.setPosition(2900, 200);
 		
 		populateEnemies();
 		
@@ -51,7 +52,7 @@ public class Level1State extends GameState {
 
 		hud = new HUD(player);
 		
-		bgMusic = new AudioPlayer("Music/level1-1.mp3", -1f);
+		bgMusic = new AudioPlayer("Music/five-stars.mp3", -7f);
 		bgMusic.playLoop();
 	}
 	
@@ -78,6 +79,8 @@ public class Level1State extends GameState {
 		b.setPosition(2950, 100);
 		enemies.add(b);
 	}
+	
+	private boolean endGameMusic;
 
 	public void update() {
 		player.update();
@@ -85,12 +88,24 @@ public class Level1State extends GameState {
 		tileMap.setPosition(GamePanel.WIDTH / 2 - player.getx(), GamePanel.HEIGHT / 2 - player.gety());
 		
 		bg.setPosition(tileMap.getx(), tileMap.gety());
-		
+			
 		player.checkAttack(enemies);
+		
+		if (tileMap.getx() <= -2430 && !endGameMusic) {
+			bgMusic.stop();
+			bgMusic = new AudioPlayer("Music/adrenaline.mp3", -7f);
+			bgMusic.playLoop();
+			endGameMusic = true;
+		}
 		
 		updateEnemies();
 		
 		updateExplosions();
+		
+		if (player.isDead()) {
+			bgMusic.stop();
+			gsm.setState(GameStateManager.GAMEOVER);
+		}
 	}
 
 	private void updateEnemies() {
@@ -103,6 +118,10 @@ public class Level1State extends GameState {
 				final Explosion expl = new Explosion(e.getx(), e.gety());
 				expl.setMapPosition((int)e.getXmap(),(int)e.getYmap());
 				explosions.add(expl);
+				if (e instanceof Bahamut && !player.isDead()) {
+					bgMusic.stop();
+					gsm.setState(GameStateManager.LEVELCOMPLETE);
+				}
 			}
 		}
 	}
