@@ -156,6 +156,11 @@ public class Player extends Actor {
 	}
 
 	public void setGliding(boolean b) {
+		if (gliding) {
+			sfx.get("gliding").play();
+		} else {
+			sfx.get("gliding").stop();
+		}
 		gliding = b;
 	}
 

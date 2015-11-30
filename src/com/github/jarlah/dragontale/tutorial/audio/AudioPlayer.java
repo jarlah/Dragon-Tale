@@ -54,4 +54,12 @@ public class AudioPlayer {
 		stop();
 		clip.close();
 	}
+
+	public void playLoop() {
+		if (clip == null) return;
+		stop();
+		clip.setFramePosition(0);
+		clip.setLoopPoints(0, clip.getFrameLength()-10);
+		clip.loop(-1);
+	}
 }

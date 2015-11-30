@@ -52,15 +52,15 @@ public class Level1State extends GameState {
 		hud = new HUD(player);
 		
 		bgMusic = new AudioPlayer("Music/level1-1.mp3", -1f);
-		bgMusic.play();
+		bgMusic.playLoop();
 	}
 	
 	private void populateEnemies() {
 		enemies = new ArrayList<Enemy>();
 		
 		for (Point point: new Point[] {
-			new Point(200, 100),
 			new Point(860, 200),
+			new Point(1000, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),
 			new Point(1800, 200)
@@ -75,7 +75,7 @@ public class Level1State extends GameState {
 		enemies.add(s);
 		
 		Bahamut b = new Bahamut(tileMap);
-		b.setPosition(100, 50);
+		b.setPosition(2950, 100);
 		enemies.add(b);
 	}
 
