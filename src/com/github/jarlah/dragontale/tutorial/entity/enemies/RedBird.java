@@ -72,6 +72,8 @@ public class RedBird extends Enemy{
 	}
 
 	public void update() {
+		super.update();
+		
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
@@ -100,6 +102,13 @@ public class RedBird extends Enemy{
 		//	if (notOnScreen()) return;
 		
 		setMapPosition();
+		
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed / 100 % 2 == 0) {
+				return;
+			}
+		}
 		
 		super.draw(g);
 	}

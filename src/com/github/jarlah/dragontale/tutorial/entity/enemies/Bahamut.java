@@ -39,7 +39,7 @@ public class Bahamut extends Enemy {
 		
 		animation = new Animation();
 		animation.setFrames(sprites, width, height);
-		animation.setDelay(300);
+		animation.setDelay(200);
 		
 		right = true;
 		facingRight = true;
@@ -64,6 +64,8 @@ public class Bahamut extends Enemy {
 	}
 
 	public void update() {
+		super.update();
+		
 		getNextPosition();
 		checkTileMapCollision();
 		setPosition(xtemp, ytemp);
@@ -92,6 +94,13 @@ public class Bahamut extends Enemy {
 		//	if (notOnScreen()) return;
 		
 		setMapPosition();
+		
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed / 100 % 2 == 0) {
+				return;
+			}
+		}
 		
 		super.draw(g);
 	}

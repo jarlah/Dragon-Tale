@@ -46,7 +46,7 @@ public class Level1State extends GameState {
 		bg = new Background("Backgrounds/grassbg1.gif", 0.1);
 
 		player = new Player(tileMap);
-		player.setPosition(300, 100);
+		player.setPosition(400, 100);
 		
 		populateEnemies();
 		
@@ -61,7 +61,7 @@ public class Level1State extends GameState {
 		enemies = new ArrayList<Enemy>();
 		
 		for (Point point: new Point[] {
-			//new Point(50, 200),
+			new Point(200, 100),
 			new Point(860, 200),
 			new Point(1525, 200),
 			new Point(1680, 200),

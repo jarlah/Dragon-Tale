@@ -104,11 +104,9 @@ public class Player extends Actor {
 				BufferedImage[] bi = new BufferedImage[animation.numFrames];
 				for (int j = 0; j < animation.numFrames; j++) {
 					if (AnimationInfo.SCRATCHING != animation) {
-						bi[j] = spritesheet.getSubimage(j * width, i * height,
-								width, height);
+						bi[j] = spritesheet.getSubimage(j * width, i * height, width, height);
 					} else {
-						bi[j] = spritesheet.getSubimage(j * width * 2, i
-								* height, animation.width, height);
+						bi[j] = spritesheet.getSubimage(j * width * 2, i * height, animation.width, height);
 					}
 				}
 				sprites.add(bi);
@@ -119,13 +117,8 @@ public class Player extends Actor {
 		}
 
 		animation = new Animation();
-		currentAction = AnimationInfo.IDLE.index;
-		animation
-				.setFrames(sprites.get(AnimationInfo.IDLE.index),
-						AnimationInfo.IDLE.width,
-						AnimationInfo.IDLE.height);
-		animation.setDelay(400);
-
+		
+		setCurrentAction(AnimationInfo.IDLE, 400);
 	}
 
 	public int getHealth() {
@@ -237,6 +230,7 @@ public class Player extends Actor {
 		fire += 1;
 		if (fire > maxFire)
 			fire = maxFire;
+		
 		if (firing && currentAction != AnimationInfo.FIREBALL.index) {
 			if (fire > fireCost) {
 				fire -= fireCost;
@@ -254,72 +248,42 @@ public class Player extends Actor {
 				it.remove();
 			}
 		}
+		
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed > 1000) {
+				flinching = false;
+			}
+		}
 
 		// set animation
 		if (scratching) {
 			if (currentAction != AnimationInfo.SCRATCHING.index) {
-				currentAction = AnimationInfo.SCRATCHING.index;
-				animation.setFrames(
-						sprites.get(AnimationInfo.SCRATCHING.index),
-						AnimationInfo.SCRATCHING.width,
-						AnimationInfo.SCRATCHING.height);
-				animation.setDelay(50);
-				width = 60;
+				setCurrentAction(AnimationInfo.SCRATCHING, 50);
 			}
 		} else if (firing) {
 			if (currentAction != AnimationInfo.FIREBALL.index) {
-				currentAction = AnimationInfo.FIREBALL.index;
-				animation.setFrames(sprites.get(AnimationInfo.FIREBALL.index),
-						AnimationInfo.FIREBALL.width,
-						AnimationInfo.FIREBALL.height);
-				animation.setDelay(100);
-				width = 30;
+				setCurrentAction(AnimationInfo.FIREBALL, 100);
 			}
 		} else if (dy > 0) {
 			if (gliding) {
 				if (currentAction != AnimationInfo.GLIDING.index) {
-					currentAction = AnimationInfo.GLIDING.index;
-					animation.setFrames(
-							sprites.get(AnimationInfo.GLIDING.index),
-							AnimationInfo.GLIDING.width,
-							AnimationInfo.GLIDING.height);
-					animation.setDelay(100);
-					width = 30;
+					setCurrentAction(AnimationInfo.GLIDING, 100);
 				}
 			} else if (currentAction != AnimationInfo.FALLING.index) {
-				currentAction = AnimationInfo.FALLING.index;
-				animation.setFrames(sprites.get(AnimationInfo.FALLING.index),
-						AnimationInfo.FALLING.width,
-						AnimationInfo.FALLING.height);
-				animation.setDelay(100);
-				width = 30;
+				setCurrentAction(AnimationInfo.FALLING, 100);
 			}
 		} else if (dy < 0) {
 			if (currentAction != AnimationInfo.JUMPING.index) {
-				currentAction = AnimationInfo.JUMPING.index;
-				animation.setFrames(sprites.get(AnimationInfo.JUMPING.index),
-						AnimationInfo.JUMPING.width,
-						AnimationInfo.JUMPING.height);
-				animation.setDelay(-1);
-				width = 30;
+				setCurrentAction(AnimationInfo.JUMPING, -1);
 			}
 		} else if (left || right) {
 			if (currentAction != AnimationInfo.WALKING.index) {
-				currentAction = AnimationInfo.WALKING.index;
-				animation.setFrames(sprites.get(AnimationInfo.WALKING.index),
-						AnimationInfo.WALKING.width,
-						AnimationInfo.WALKING.height);
-				animation.setDelay(40);
-				width = 30;
+				setCurrentAction(AnimationInfo.WALKING, 40);
 			}
 		} else {
 			if (currentAction != AnimationInfo.IDLE.index) {
-				currentAction = AnimationInfo.IDLE.index;
-				animation.setFrames(sprites.get(AnimationInfo.IDLE.index),
-						AnimationInfo.IDLE.width,
-						AnimationInfo.IDLE.height);
-				animation.setDelay(400);
-				width = 30;
+				setCurrentAction(AnimationInfo.IDLE, 400);
 			}
 		}
 
@@ -334,6 +298,13 @@ public class Player extends Actor {
 				facingRight = false;
 		}
 
+	}
+
+	private void setCurrentAction(AnimationInfo info, int delay) {
+		currentAction = info.index;
+		animation.setFrames(sprites.get(info.index), info.width, info.height);
+		animation.setDelay(delay);
+		width = info.width;
 	}
 
 	public void draw(Graphics2D g) {
@@ -379,7 +350,20 @@ public class Player extends Actor {
 					break;
 				}
 			}
+			
+			if (intersects(e)) {
+				hit(e.getDamage());
+			}
 		}
 	}
+
+	private void hit(int damage) {
+		if (flinching) return;
+		health -= damage;
+		if (health < 0) health = 0;
+		if (health == 0) dead = true;
+		flinching = true;
+		flinchTimer = System.nanoTime();
+ 	}
 
 }

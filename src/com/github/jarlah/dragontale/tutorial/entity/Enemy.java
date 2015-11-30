@@ -28,5 +28,12 @@ public abstract class Enemy extends Actor {
 		flinchTimer = System.nanoTime();
 	}
 
-	public void update() {}
+	public void update() {
+		if (flinching) {
+			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+			if (elapsed > 1000) {
+				flinching = false;
+			}
+		}
+	}
 }
