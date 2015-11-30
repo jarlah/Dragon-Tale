@@ -51,15 +51,12 @@ public class Explosion {
 			y + ymap - height / 2,
 			null
 		);
-		System.out.println("Drawed");
 	}
 	
 	public void update() {
 		animation.update();
 		if (animation.hasPlayedOnce()) {
-			System.out.println("Dead");
 			remove = true;
 		}
-		System.out.println("Updated");
 	}
 }
