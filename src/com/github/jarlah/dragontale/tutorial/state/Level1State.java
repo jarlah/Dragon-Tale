@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.jarlah.dragontale.tutorial.audio.AudioPlayer;
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.entity.Explosion;
 import com.github.jarlah.dragontale.tutorial.entity.HUD;
@@ -28,6 +29,8 @@ public class Level1State extends GameState {
 	private List<Explosion> explosions;
 	
 	private HUD hud;
+	
+	private AudioPlayer bgMusic;
 
 	public Level1State(GameStateManager gsm) {
 		this.gsm = gsm;
@@ -47,6 +50,9 @@ public class Level1State extends GameState {
 		explosions = new ArrayList<Explosion>();
 
 		hud = new HUD(player);
+		
+		bgMusic = new AudioPlayer("SFX/level1-1.mp3");
+		bgMusic.play();
 	}
 	
 	private void populateEnemies() {
