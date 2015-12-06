@@ -110,7 +110,6 @@ public class TileMap {
 
 			String delims = "\\s+";
 			List<List<TileInfo>> tileInfo = new ArrayList<>();
-			int rowCount = 0;
 			while(br.ready()) {
 				String row = br.readLine();
 				String[] columns = row.split(delims);
@@ -119,7 +118,6 @@ public class TileMap {
 					String column = columns[col];
 					if (column.equals("0")) {
 						tileList.add(new EmptyTile());
-						System.out.println("Found air >> col " + col + " in row " + rowCount);
 						continue;
 					}
 					String[] spec = column.split(";");
@@ -137,10 +135,8 @@ public class TileMap {
 					}
 					TileInfo info = new TileInfo(blocking, colPos, rowPos);
 					tileList.add(info);
-					System.out.println("Found block >> col " + col + " in row " + rowCount);
 				}
 				tileInfo.add(tileList);
-				rowCount++;
 			}
 			
 			final int listSize = tileInfo.size();

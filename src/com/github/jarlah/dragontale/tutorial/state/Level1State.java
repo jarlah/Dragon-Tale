@@ -37,11 +37,11 @@ public class Level1State extends GameState {
 		
 		tileMap = new TileMap(30);
 		tileMap.loadTiles("Tilesets/grasstileset.gif");
-		tileMap.loadMap("Maps/level1-2.map");
+		tileMap.loadMap("Maps/level1-2.csv");
 		tileMap.setPosition(0, 0);
 		tileMap.setTween(0.07);
 
-		bg = new Background("Backgrounds/grassbg1.gif", 0.1);
+		bg = new Background("Backgrounds/grassbg1.png", 0.1);
 
 		player = new Player(tileMap);
 		player.setPosition(50, 50);
@@ -102,7 +102,7 @@ public class Level1State extends GameState {
 		
 		updateExplosions();
 		
-		if (player.isDead() || player.gety() > GamePanel.HEIGHT) {
+		if (player.isDead()) {
 			bgMusic.stop();
 			gsm.setState(GameStateManager.GAMEOVER);
 		}

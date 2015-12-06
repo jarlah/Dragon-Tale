@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
-import com.github.jarlah.dragontale.tutorial.tilemap.Tile;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 
 public abstract class Actor {
@@ -96,10 +95,6 @@ public abstract class Actor {
 		topRight = tileMap.isBlocking(topTile, rightTile);
 		bottomLeft = tileMap.isBlocking(bottomTile, leftTile);
 		bottomRight = tileMap.isBlocking(bottomTile, rightTile);
-
-		if (this instanceof Player) {
-			System.out.println(topLeft);
-		}
 	}
 	
 	public void draw(Graphics2D g) {
