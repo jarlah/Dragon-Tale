@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -25,7 +27,7 @@ public class TileMap {
 	private double tween;
 
 	// map
-	private int[][] map;
+	private TileInfo[][] map;
 	private int tileSize;
 	private int numRows;
 	private int numCols;
@@ -56,34 +58,49 @@ public class TileMap {
 					_col * _tileSize,
 					_row == 0 ? 0 : _tileSize, 
 					_tileSize, _tileSize
-				), _row == 0 ? Tile.NORMAL : Tile.BLOCKED);
+				));
 			}
 		};
 	}
 
 	interface TileFactory {
-		public Tile createTile(BufferedImage _tileSet, int _row, int _col,
-				int _tileSize);
+		public Tile createTile(BufferedImage _tileSet, int _row, int _col, int _tileSize);
 	}
 
 	public void loadTiles(String s) {
 		try {
-			tileset = ImageIO.read(getClass().getClassLoader()
-					.getResourceAsStream(s));
+			tileset = ImageIO.read(getClass().getClassLoader().getResourceAsStream(s));
 			numTilesHorizontal = tileset.getWidth() / tileSize;
 			numTilesVertical = tileset.getHeight() / tileSize;
 			tiles = new Tile[numTilesVertical][numTilesHorizontal];
 			for (int col = 0; col < numTilesHorizontal; col++) {
 				for (int row = 0; row < numTilesVertical; row++) {
-					tiles[row][col] = tileFactory.createTile(tileset, row, col,
-							tileSize);
+					tiles[row][col] = tileFactory.createTile(tileset, row, col, tileSize);
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	class TileInfo { 
+		boolean blocking; 
+		int col; 
+		int row;
+		
+		public TileInfo(boolean b, int col, int row) { 
+			this.blocking = b; 
+			this.col = col;
+			this.row = row;
+		}
+	}
 
+	class EmptyTile extends TileInfo{
+		public EmptyTile() {
+			super(false, -1, -1);
+		}
+	}
+	
 	public void loadMap(String s) {
 
 		try {
@@ -91,25 +108,62 @@ public class TileMap {
 			InputStream in = getClass().getClassLoader().getResourceAsStream(s);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-			numCols = Integer.parseInt(br.readLine());
-			numRows = Integer.parseInt(br.readLine());
-			map = new int[numRows][numCols];
+			String delims = "\\s+";
+			List<List<TileInfo>> tileInfo = new ArrayList<>();
+			int rowCount = 0;
+			while(br.ready()) {
+				String row = br.readLine();
+				String[] columns = row.split(delims);
+				List<TileInfo> tileList = new ArrayList<>();
+				for (int col = 0; col < columns.length; col ++) {
+					String column = columns[col];
+					if (column.equals("0")) {
+						tileList.add(new EmptyTile());
+						System.out.println("Found air >> col " + col + " in row " + rowCount);
+						continue;
+					}
+					String[] spec = column.split(";");
+					boolean blocking = false;
+					int colPos, rowPos;
+					if(spec.length == 3) {
+						blocking = spec[0].equals("b");
+						colPos = Integer.parseInt(spec[1]);
+						rowPos = Integer.parseInt(spec[2]);
+					} else if (spec.length == 2){
+						colPos = Integer.parseInt(spec[0]);
+						rowPos = Integer.parseInt(spec[1]);
+					} else {
+						throw new IllegalArgumentException("Wrong column info " + column);
+					}
+					TileInfo info = new TileInfo(blocking, colPos, rowPos);
+					tileList.add(info);
+					System.out.println("Found block >> col " + col + " in row " + rowCount);
+				}
+				tileInfo.add(tileList);
+				rowCount++;
+			}
+			
+			final int listSize = tileInfo.size();
+			map = new TileInfo[listSize][];
+			for(int i = 0; i < listSize; i++) {
+			    List<TileInfo> sublist = tileInfo.get(i);
+			    final int sublistSize = sublist.size();
+			    map[i] = new TileInfo[sublistSize];
+			    for(int j = 0; j < sublistSize; j++) {
+			    	map[i][j] = sublist.get(j);
+			    }
+			}
+			
+			numRows = map.length;
+			numCols = map[0].length;
+			
 			width = numCols * tileSize;
 			height = numRows * tileSize;
-
+			
 			xmin = GamePanel.WIDTH - width;
 			xmax = 0;
 			ymin = GamePanel.HEIGHT - height;
 			ymax = 0;
-
-			String delims = "\\s+";
-			for (int row = 0; row < numRows; row++) {
-				String line = br.readLine();
-				String[] tokens = line.split(delims);
-				for (int col = 0; col < numCols; col++) {
-					map[row][col] = Integer.parseInt(tokens[col]);
-				}
-			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,11 +191,10 @@ public class TileMap {
 		return height;
 	}
 
-	public int getType(int row, int col) {
-		int rc = map[row][col];
-		int r = rc / numTilesHorizontal;
-		int c = rc % numTilesHorizontal;
-		return tiles[r][c].getType();
+	public boolean isBlocking(int row, int col) {
+		TileInfo info = map[row][col];
+		if (info instanceof EmptyTile) return false;
+		return info.blocking;
 	}
 
 	public void setTween(double d) {
@@ -150,13 +203,13 @@ public class TileMap {
 
 	public void setPosition(double x, double y) {
 
-		System.out.println(this.x);
-		System.out.println((x - this.x) * tween);
+		//System.out.println(this.x);
+		//System.out.println((x - this.x) * tween);
 
 		this.x += (x - this.x) * tween;
 		this.y += (y - this.y) * tween;
 
-		System.out.println(this.x + "\n==========");
+		//System.out.println(this.x + "\n==========");
 
 		fixBounds();
 
@@ -188,14 +241,12 @@ public class TileMap {
 				if (col >= numCols)
 					break;
 
-				if (map[row][col] == 0)
+				if (map[row][col] instanceof EmptyTile)
 					continue;
 
-				int rc = map[row][col];
-				int r = rc / numTilesHorizontal;
-				int c = rc % numTilesHorizontal;
+				TileInfo info = map[row][col];
 
-				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize,
+				g.drawImage(tiles[info.row][info.col].getImage(), (int) x + col * tileSize,
 						(int) y + row * tileSize, null);
 
 			}

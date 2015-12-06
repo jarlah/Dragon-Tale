@@ -92,16 +92,14 @@ public abstract class Actor {
                 return;
         }
 
-		int tl = tileMap.getType(topTile, leftTile);
-		int tr = tileMap.getType(topTile, rightTile);
-		int bl = tileMap.getType(bottomTile, leftTile);
-		int br = tileMap.getType(bottomTile, rightTile);
+		topLeft = tileMap.isBlocking(topTile, leftTile);
+		topRight = tileMap.isBlocking(topTile, rightTile);
+		bottomLeft = tileMap.isBlocking(bottomTile, leftTile);
+		bottomRight = tileMap.isBlocking(bottomTile, rightTile);
 
-		topLeft = tl == Tile.BLOCKED;
-		topRight = tr == Tile.BLOCKED;
-		bottomLeft = bl == Tile.BLOCKED;
-		bottomRight = br == Tile.BLOCKED;
-
+		if (this instanceof Player) {
+			System.out.println(topLeft);
+		}
 	}
 	
 	public void draw(Graphics2D g) {
