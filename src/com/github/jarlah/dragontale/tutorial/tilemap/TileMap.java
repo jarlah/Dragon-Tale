@@ -5,8 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -27,7 +25,7 @@ public class TileMap {
 	private double tween;
 
 	// map
-	private TileInfo[][] map;
+	private Tile[][] map;
 	private int tileSize;
 	private int numRows;
 	private int numCols;
@@ -38,33 +36,19 @@ public class TileMap {
 	private BufferedImage tileset;
 	private int numTilesHorizontal;
 	private int numTilesVertical;
-	private Tile[][] tiles;
+	private BufferedImage[][] tiles;
 
 	// drawing
 	private int rowOffset;
 	private int colOffset;
 	private int numRowsToDraw;
 	private int numColsToDraw;
-	private TileFactory tileFactory;
 
 	public TileMap(int tileSize) {
 		this.tileSize = tileSize;
 		numRowsToDraw = GamePanel.HEIGHT / tileSize + 2;
 		numColsToDraw = GamePanel.WIDTH / tileSize + 2;
 		tween = 0.07;
-		tileFactory = new TileFactory() {
-			public Tile createTile(BufferedImage _tileSet, int _row, int _col, int _tileSize) {
-				return new Tile(_tileSet.getSubimage(
-					_col * _tileSize,
-					_row == 0 ? 0 : _tileSize, 
-					_tileSize, _tileSize
-				));
-			}
-		};
-	}
-
-	interface TileFactory {
-		public Tile createTile(BufferedImage _tileSet, int _row, int _col, int _tileSize);
 	}
 
 	public void loadTiles(String s) {
@@ -72,10 +56,12 @@ public class TileMap {
 			tileset = ImageIO.read(getClass().getClassLoader().getResourceAsStream(s));
 			numTilesHorizontal = tileset.getWidth() / tileSize;
 			numTilesVertical = tileset.getHeight() / tileSize;
-			tiles = new Tile[numTilesVertical][numTilesHorizontal];
+			tiles = new BufferedImage[numTilesVertical][numTilesHorizontal];
 			for (int col = 0; col < numTilesHorizontal; col++) {
 				for (int row = 0; row < numTilesVertical; row++) {
-					tiles[row][col] = tileFactory.createTile(tileset, row, col, tileSize);
+					int spriteX = col * tileSize;
+					int spriteY = row == 0 ? 0 : tileSize;
+					tiles[row][col] = tileset.getSubimage(spriteX, spriteY, tileSize, tileSize);
 				}
 			}
 		} catch (Exception e) {
@@ -83,71 +69,23 @@ public class TileMap {
 		}
 	}
 	
-	class TileInfo { 
-		boolean blocking; 
-		int col; 
-		int row;
-		
-		public TileInfo(boolean b, int col, int row) { 
-			this.blocking = b; 
-			this.col = col;
-			this.row = row;
-		}
-	}
-
-	class EmptyTile extends TileInfo{
-		public EmptyTile() {
-			super(false, -1, -1);
-		}
-	}
-	
 	public void loadMap(String s) {
 
 		try {
 
+			String delims = "\\s+";
 			InputStream in = getClass().getClassLoader().getResourceAsStream(s);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-
-			String delims = "\\s+";
-			List<List<TileInfo>> tileInfo = new ArrayList<>();
-			while(br.ready()) {
-				String row = br.readLine();
-				String[] columns = row.split(delims);
-				List<TileInfo> tileList = new ArrayList<>();
-				for (int col = 0; col < columns.length; col ++) {
-					String column = columns[col];
-					if (column.equals("0")) {
-						tileList.add(new EmptyTile());
-						continue;
-					}
-					String[] spec = column.split(";");
-					boolean blocking = false;
-					int colPos, rowPos;
-					if(spec.length == 3) {
-						blocking = spec[0].equals("b");
-						colPos = Integer.parseInt(spec[1]);
-						rowPos = Integer.parseInt(spec[2]);
-					} else if (spec.length == 2){
-						colPos = Integer.parseInt(spec[0]);
-						rowPos = Integer.parseInt(spec[1]);
-					} else {
-						throw new IllegalArgumentException("Wrong column info " + column);
-					}
-					TileInfo info = new TileInfo(blocking, colPos, rowPos);
-					tileList.add(info);
+			int cols = Integer.parseInt(br.readLine());
+			int rows = Integer.parseInt(br.readLine());
+			map = new Tile[rows][cols];
+			for (int row = 0; row < rows && br.ready(); row++) {
+				String line = br.readLine();
+				String[] columns = line.split(delims);
+				for (int col = 0; col < columns.length; col++) {
+					Tile type = Tile.valueOf(Integer.parseInt(columns[col]));
+					map[row][col] = type;
 				}
-				tileInfo.add(tileList);
-			}
-			
-			final int listSize = tileInfo.size();
-			map = new TileInfo[listSize][];
-			for(int i = 0; i < listSize; i++) {
-			    List<TileInfo> sublist = tileInfo.get(i);
-			    final int sublistSize = sublist.size();
-			    map[i] = new TileInfo[sublistSize];
-			    for(int j = 0; j < sublistSize; j++) {
-			    	map[i][j] = sublist.get(j);
-			    }
 			}
 			
 			numRows = map.length;
@@ -188,9 +126,7 @@ public class TileMap {
 	}
 
 	public boolean isBlocking(int row, int col) {
-		TileInfo info = map[row][col];
-		if (info instanceof EmptyTile) return false;
-		return info.blocking;
+		return map[row][col].isBlocking();
 	}
 
 	public void setTween(double d) {
@@ -237,13 +173,12 @@ public class TileMap {
 				if (col >= numCols)
 					break;
 
-				if (map[row][col] instanceof EmptyTile)
+				if (Tile.EMPTY == map[row][col])
 					continue;
 
-				TileInfo info = map[row][col];
+				Tile info = map[row][col];
 
-				g.drawImage(tiles[info.row][info.col].getImage(), (int) x + col * tileSize,
-						(int) y + row * tileSize, null);
+				g.drawImage(tiles[info.getY()][info.getX()], (int) x + col * tileSize, (int) y + row * tileSize, null);
 
 			}
 

@@ -1,27 +1,39 @@
 package com.github.jarlah.dragontale.tutorial.tilemap;
 
-import java.awt.image.BufferedImage;
-
-public class Tile {
-
-	private BufferedImage image;
+public enum Tile {
+	EMPTY(0, -1, -1, false),
+	GROUND(1, 0, 1, true);
 	
-	private boolean blocking;
+	private final int id;
+	private final int x;
+	private final int y;
+	private final boolean blocking;
 
-	public Tile(BufferedImage image) {
-		this.image = image;
+	private Tile(int id, int x, int y, boolean blocking) {
+		this.id = id;
+		this.x = x;
+		this.y = y;
+		this.blocking = blocking;
 	}
-
-	public BufferedImage getImage() {
-		return image;
+	
+	public static Tile valueOf(int id) {
+		for (Tile t: values()){
+			if (t.id == id) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 	public boolean isBlocking() {
 		return blocking;
 	}
-	
-	public void setBlocking(boolean b) {
-		this.blocking = b;
+
+	public int getX() {
+		return x;
 	}
 
+	public int getY() {
+		return y;
+	}
 }
