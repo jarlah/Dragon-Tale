@@ -2,7 +2,9 @@ package com.github.jarlah.dragontale.tutorial.tilemap;
 
 public enum Tile {
 	EMPTY(0, -1, -1, false),
-	GROUND(1, 0, 1, true);
+	GROUND(1, 0, 1, true),
+	EARTH(2, 1, 1, true),
+	STUFF(3, 2, 0, false);
 	
 	private final int id;
 	private final int x;

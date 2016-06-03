@@ -75,8 +75,7 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
 			
 			try {
 				Thread.sleep(wait);
-			}
-			catch(Exception e) {
+			} catch(Exception e) {
 				e.printStackTrace();
 			}
 		}

@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import com.github.jarlah.dragontale.tutorial.audio.AudioPlayer;
+import com.github.jarlah.dragontale.tutorial.main.GamePanel;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 
 public class Player extends Actor {
@@ -234,6 +235,7 @@ public class Player extends Actor {
 		// update position
 		getNextPosition();
 		checkTileMapCollision();
+		checkOutOfBounds();
 		setPosition(xtemp, ytemp);
 
 		if (currentAction == AnimationInfo.SCRATCHING.index) {
@@ -321,6 +323,14 @@ public class Player extends Actor {
 				facingRight = false;
 		}
 
+	}
+
+	private void checkOutOfBounds() {
+		//System.out.println("X: " + x + " Y: " + y);
+		//System.out.println("Game width: " + GamePanel.WIDTH * GamePanel.SCALE + " Game height: " + GamePanel.HEIGHT * GamePanel.SCALE);
+		if (y > GamePanel.HEIGHT * GamePanel.SCALE) {
+			dead = true;
+		}
 	}
 
 	private void setCurrentAction(AnimationInfo info, int delay) {
