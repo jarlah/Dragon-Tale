@@ -1,11 +1,7 @@
 package com.github.jarlah.dragontale.tutorial.tilemap;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.Graphics2D;
 import tiled.core.Map;
 import tiled.core.TileLayer;
 import tiled.io.TMXMapReader;
