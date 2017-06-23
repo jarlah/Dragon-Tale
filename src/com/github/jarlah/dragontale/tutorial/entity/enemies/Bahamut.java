@@ -8,10 +8,11 @@ import javax.imageio.ImageIO;
 import com.github.jarlah.dragontale.tutorial.entity.Animation;
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
+import java.io.IOException;
 
 public class Bahamut extends Enemy {
 
-    private BufferedImage[] sprites;
+    private final BufferedImage[] sprites;
 
     public Bahamut(TileMap tm) {
         super(tm);
@@ -34,8 +35,8 @@ public class Bahamut extends Enemy {
             sprites[1] = spriteSheet.getSubimage(width, 2 * height, width, height);
             sprites[2] = spriteSheet.getSubimage(2 * width, 2 * height, width, height);
             sprites[3] = spriteSheet.getSubimage(3 * width, 2 * height, width, height);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load bahamut", e);
         }
 
         animation = new Animation();
@@ -63,6 +64,7 @@ public class Bahamut extends Enemy {
         }
     }
 
+    @Override
     public void update() {
         super.update();
 
@@ -90,8 +92,8 @@ public class Bahamut extends Enemy {
         animation.update();
     }
 
+    @Override
     public void draw(Graphics2D g) {
-        //	if (notOnScreen()) return;
 
         setMapPosition();
 

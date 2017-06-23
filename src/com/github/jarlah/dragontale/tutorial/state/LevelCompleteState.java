@@ -10,10 +10,10 @@ import com.github.jarlah.dragontale.tutorial.tilemap.Background;
 
 public class LevelCompleteState extends GameState {
 
-    private Background bg;
-    private Color titleColor;
-    private Font titleFont;
-    private AudioPlayer bgMusic;
+    private final Background bg;
+    private final Color titleColor;
+    private final Font titleFont;
+    private final AudioPlayer bgMusic;
 
     public LevelCompleteState(GameStateManager gsm) {
         super(gsm);
@@ -21,7 +21,7 @@ public class LevelCompleteState extends GameState {
             bg = new Background("Backgrounds/complete.png", 1);
             bg.setVector(0, 0);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not load complete.png", e);
         }
         titleColor = Color.BLACK;
         titleFont = new Font("Arial", Font.BOLD, 30);

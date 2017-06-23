@@ -40,13 +40,13 @@ public class TmxFileTileMap implements TileMap {
         tween = 0.07;
     }
 
-    public void loadMap(String tmxLocation) {        
+    public void loadMap(String tmxLocation) {
         try {
             tmxMap = new TMXMapReader().readMap(tmxLocation);
         } catch (Exception ex) {
             throw new IllegalStateException("Could not load tmx map", ex);
         }
-        
+
         tileSize = tmxMap.getTileHeight();
         numRowsToDraw = tmxMap.getHeight();
         numColsToDraw = tmxMap.getWidth();
@@ -70,9 +70,9 @@ public class TmxFileTileMap implements TileMap {
         width = numCols * tileSize;
         height = numRows * tileSize;
 
-        xmin = GamePanel.WIDTH - width;
+        xmin = GamePanel.GAME_WIDTH - width;
         xmax = 0;
-        ymin = GamePanel.HEIGHT - height;
+        ymin = GamePanel.GAME_HEIGHT - height;
         ymax = 0;
     }
 

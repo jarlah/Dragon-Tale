@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public abstract class Actor {
+
     // tile stuff
     protected TileMap tileMap;
     protected int tileSize;
@@ -233,9 +234,9 @@ public abstract class Actor {
     }
 
     public boolean notOnScreen() {
-        return x + xmap + width < 0 || x + xmap - width > GamePanel.WIDTH
+        return x + xmap + width < 0 || x + xmap - width > GamePanel.GAME_WIDTH
                 || y + ymap + height < 0
-                || y + ymap - height > GamePanel.HEIGHT;
+                || y + ymap - height > GamePanel.GAME_HEIGHT;
     }
 
     public double getXmap() {

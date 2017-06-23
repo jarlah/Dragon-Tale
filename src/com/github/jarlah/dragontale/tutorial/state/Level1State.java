@@ -20,17 +20,12 @@ import com.github.jarlah.dragontale.tutorial.tilemap.TmxFileTileMap;
 
 public class Level1State extends GameState {
 
-    private TmxFileTileMap tileMap;
-    private Background bg;
-
-    private Player player;
-
+    private final TmxFileTileMap tileMap;
+    private final Background bg;
+    private final Player player;
     private List<Enemy> enemies;
-
-    private List<Explosion> explosions;
-
-    private HUD hud;
-
+    private final List<Explosion> explosions;
+    private final HUD hud;
     private AudioPlayer bgMusic;
 
     public Level1State(GameStateManager gsm) {
@@ -48,7 +43,7 @@ public class Level1State extends GameState {
 
         populateEnemies();
 
-        explosions = new ArrayList<Explosion>();
+        explosions = new ArrayList<>();
 
         hud = new HUD(player);
 
@@ -86,7 +81,7 @@ public class Level1State extends GameState {
     public void update() {
         player.update();
 
-        tileMap.setPosition(GamePanel.WIDTH / 2 - player.getx(), GamePanel.HEIGHT / 2 - player.gety());
+        tileMap.setPosition(GamePanel.GAME_WIDTH / 2 - player.getx(), GamePanel.GAME_HEIGHT / 2 - player.gety());
 
         bg.setPosition(tileMap.getXPoisition(), tileMap.getYPosition());
 
@@ -138,6 +133,7 @@ public class Level1State extends GameState {
         }
     }
 
+    @Override
     public void draw(Graphics2D g) {
         // draw bg
         bg.draw(g);
@@ -145,20 +141,21 @@ public class Level1State extends GameState {
         // draw tilemap
         tileMap.draw(g);
 
-        for (Enemy en : enemies) {
+        enemies.forEach((en) -> {
             en.draw(g);
-        }
+        });
 
         // draw player
         player.draw(g);
 
-        for (Explosion expl : explosions) {
+        explosions.forEach((expl) -> {
             expl.draw(g);
-        }
+        });
 
         hud.draw(g);
     }
 
+    @Override
     public void keyPressed(int k) {
         if (k == KeyEvent.VK_LEFT) {
             player.setLeft(true);
@@ -186,6 +183,7 @@ public class Level1State extends GameState {
         }
     }
 
+    @Override
     public void keyReleased(int k) {
         if (k == KeyEvent.VK_LEFT) {
             player.setLeft(false);

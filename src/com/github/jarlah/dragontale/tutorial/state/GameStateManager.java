@@ -2,7 +2,7 @@ package com.github.jarlah.dragontale.tutorial.state;
 
 public class GameStateManager {
 
-    private GameState[] gameStates;
+    private final GameState[] gameStates;
     private int currentState;
 
     public static final int NUMGAMESTATES = 4;

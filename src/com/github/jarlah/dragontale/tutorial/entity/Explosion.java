@@ -31,7 +31,7 @@ public class Explosion {
                 );
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Could not load explosition", e);
+            throw new IllegalStateException("Could not load explosion", e);
         }
 
         animation = new Animation();

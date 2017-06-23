@@ -334,7 +334,7 @@ public class Player extends Actor {
     }
 
     private void checkOutOfBounds() {
-        if (y > GamePanel.HEIGHT * GamePanel.SCALE - tileMap.getYPosition()) {
+        if (y > GamePanel.GAME_HEIGHT * GamePanel.GAME_SCALE - tileMap.getYPosition()) {
             dead = true;
         }
     }

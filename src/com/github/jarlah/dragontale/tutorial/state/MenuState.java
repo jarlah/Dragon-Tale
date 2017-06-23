@@ -9,7 +9,7 @@ import com.github.jarlah.dragontale.tutorial.tilemap.Background;
 
 public class MenuState extends GameState {
 
-    private Background bg;
+    private final Background bg;
 
     private int currentChoice = 0;
     private String[] options = {"Start", "Help", "Quit"};
@@ -33,14 +33,16 @@ public class MenuState extends GameState {
             font = new Font("Arial", Font.PLAIN, 12);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not load menu", e);
         }
     }
 
+    @Override
     public void update() {
         bg.update();
     }
 
+    @Override
     public void draw(Graphics2D g) {
 
         // draw bg
@@ -76,6 +78,7 @@ public class MenuState extends GameState {
         }
     }
 
+    @Override
     public void keyPressed(int k) {
         if (k == KeyEvent.VK_ENTER) {
             select();
@@ -94,6 +97,7 @@ public class MenuState extends GameState {
         }
     }
 
+    @Override
     public void keyReleased(int k) {
     }
 

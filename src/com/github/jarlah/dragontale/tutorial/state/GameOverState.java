@@ -10,10 +10,10 @@ import com.github.jarlah.dragontale.tutorial.tilemap.Background;
 
 public class GameOverState extends GameState {
 
-    private Color titleColor;
-    private Font titleFont;
-    private AudioPlayer bgMusic;
-    private Background bg;
+    private final Color titleColor;
+    private final Font titleFont;
+    private final AudioPlayer bgMusic;
+    private final Background bg;
 
     public GameOverState(GameStateManager gsm) {
         super(gsm);
@@ -21,7 +21,7 @@ public class GameOverState extends GameState {
             bg = new Background("Backgrounds/gameover.jpg", 1);
             bg.setVector(0, 0);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not load game over background", e);
         }
         titleColor = new Color(128, 0, 0);
         titleFont = new Font("Century Gothic", Font.BOLD, 30);

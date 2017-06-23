@@ -8,10 +8,11 @@ import javax.imageio.ImageIO;
 import com.github.jarlah.dragontale.tutorial.entity.Animation;
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
+import java.io.IOException;
 
 public class Slugger extends Enemy {
 
-    private BufferedImage[] sprites;
+    private final BufferedImage[] sprites;
 
     public Slugger(TileMap tm) {
         super(tm);
@@ -32,8 +33,8 @@ public class Slugger extends Enemy {
             for (int i = 0; i < sprites.length; i++) {
                 sprites[i] = spriteSheet.getSubimage(i * width, 0, width, height);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load slugger", e);
         }
 
         animation = new Animation();

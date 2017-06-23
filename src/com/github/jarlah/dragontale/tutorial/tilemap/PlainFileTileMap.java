@@ -51,8 +51,8 @@ public class PlainFileTileMap implements TileMap {
 
     public PlainFileTileMap(int tileSize) {
         this.tileSize = tileSize;
-        numRowsToDraw = GamePanel.HEIGHT / tileSize + 2;
-        numColsToDraw = GamePanel.WIDTH / tileSize + 2;
+        numRowsToDraw = GamePanel.GAME_HEIGHT / tileSize + 2;
+        numColsToDraw = GamePanel.GAME_WIDTH / tileSize + 2;
         tween = 0.07;
     }
 
@@ -111,9 +111,9 @@ public class PlainFileTileMap implements TileMap {
         width = numCols * tileSize;
         height = numRows * tileSize;
 
-        xmin = GamePanel.WIDTH - width;
+        xmin = GamePanel.GAME_WIDTH - width;
         xmax = 0;
-        ymin = GamePanel.HEIGHT - height;
+        ymin = GamePanel.GAME_HEIGHT - height;
         ymax = 0;
     }
 

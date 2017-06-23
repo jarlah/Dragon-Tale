@@ -82,6 +82,7 @@ public class FireBall extends Actor {
         }
     }
 
+    @Override
     public void draw(Graphics2D g) {
         setMapPosition();
 

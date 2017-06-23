@@ -8,10 +8,11 @@ import javax.imageio.ImageIO;
 import com.github.jarlah.dragontale.tutorial.entity.Animation;
 import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
+import java.io.IOException;
 
 public class RedBird extends Enemy {
 
-    private BufferedImage[] sprites;
+    private final BufferedImage[] sprites;
 
     public RedBird(TileMap tm) {
         super(tm);
@@ -42,8 +43,8 @@ public class RedBird extends Enemy {
             sprites[11] = spriteSheet.getSubimage(30, 55, width, height - 1);
             sprites[12] = spriteSheet.getSubimage(60, 55, width, height - 1);
             sprites[13] = spriteSheet.getSubimage(90, 55, width, height - 1);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load red bird", e);
         }
 
         animation = new Animation();

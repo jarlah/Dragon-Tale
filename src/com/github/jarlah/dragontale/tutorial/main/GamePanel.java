@@ -16,37 +16,36 @@ import com.github.jarlah.dragontale.tutorial.state.GameStateManager;
 public class GamePanel extends Canvas implements Runnable, KeyListener {
 
     // dimensions
-    public static final int WIDTH = 320;
-    public static final int HEIGHT = 240;
-    public static final int SCALE = 2;
+    public static final int GAME_WIDTH = 320;
+    public static final int GAME_HEIGHT = 240;
+    public static final int GAME_SCALE = 2;
 
     // game thread
     private Thread thread;
-    private boolean running;
-    private int FPS = 60;
-    private long targetTime = 1000 / FPS;
+    private final int FPS = 60;
+    private final long targetTime = 1000 / FPS;
 
     // image
-    private BufferedImage image;
-    private Graphics2D g2d;
+    private final BufferedImage image;
+    private final Graphics2D g2d;
 
     // game state manager
-    private GameStateManager gsm;
+    private final GameStateManager gsm;
 
     public GamePanel() {
         super();
-        setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
-        setFocusable(true);
-        requestFocus();
-        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        image = new BufferedImage(GAME_WIDTH, GAME_HEIGHT, BufferedImage.TYPE_INT_RGB);
         g2d = (Graphics2D) image.getGraphics();
-        running = true;
         gsm = new GameStateManager();
-        addKeyListener(this);
     }
 
+    @Override
     public void addNotify() {
         super.addNotify();
+        setPreferredSize(new Dimension(GAME_WIDTH * GAME_SCALE, GAME_HEIGHT * GAME_SCALE));
+        setFocusable(true);
+        requestFocus();
+        addKeyListener(this);
         if (thread == null) {
             thread = new Thread(this);
             thread.start();
@@ -60,7 +59,7 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
         long wait;
 
         // game loop
-        while (running) {
+        while (true) {
 
             start = System.nanoTime();
 
@@ -77,8 +76,7 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
 
             try {
                 Thread.sleep(wait);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (InterruptedException e) {
             }
         }
     }
@@ -87,16 +85,10 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
         gsm.update();
     }
 
-    /**
-     * Draws on the cached graphics object
-     */
     private void draw() {
         gsm.draw(g2d);
     }
 
-    /**
-     * Does the actual rendering to the screen
-     */
     private void render() {
         BufferStrategy bs = getBufferStrategy();
         if (bs == null) {
@@ -104,19 +96,22 @@ public class GamePanel extends Canvas implements Runnable, KeyListener {
             return;
         }
         Graphics g = bs.getDrawGraphics();
-        g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+        g.drawImage(image, 0, 0, GAME_WIDTH * GAME_SCALE, GAME_HEIGHT * GAME_SCALE, null);
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
         bs.show();
     }
 
+    @Override
     public void keyTyped(KeyEvent key) {
     }
 
+    @Override
     public void keyPressed(KeyEvent key) {
         gsm.keyPressed(key.getKeyCode());
     }
 
+    @Override
     public void keyReleased(KeyEvent key) {
         gsm.keyReleased(key.getKeyCode());
     }
