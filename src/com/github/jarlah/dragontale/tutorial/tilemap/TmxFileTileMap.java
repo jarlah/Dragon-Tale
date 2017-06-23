@@ -56,7 +56,7 @@ public class TmxFileTileMap implements TileMap {
         map = new Tile[rows][cols];
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if (((TileLayer) tmxMap.getLayer(0)).getTileAt(col, row) != null) {
+                if (layer.getTileAt(col, row) != null) {
                     map[row][col] = Tile.GROUND;
                 } else {
                     map[row][col] = Tile.EMPTY;
