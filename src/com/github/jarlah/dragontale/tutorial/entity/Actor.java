@@ -1,249 +1,248 @@
 package com.github.jarlah.dragontale.tutorial.entity;
 
+import com.github.jarlah.dragontale.tutorial.main.GamePanel;
+import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import com.github.jarlah.dragontale.tutorial.main.GamePanel;
-import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
-
 public abstract class Actor {
-	// tile stuff
-	protected TileMap tileMap;
-	protected int tileSize;
-	protected double xmap;
-	protected double ymap;
+    // tile stuff
+    protected TileMap tileMap;
+    protected int tileSize;
+    protected double xmap;
+    protected double ymap;
 
-	// position and vector
-	protected double x;
-	protected double y;
-	protected double dx;
-	protected double dy;
+    // position and vector
+    protected double x;
+    protected double y;
+    protected double dx;
+    protected double dy;
 
-	// dimensions
-	protected int width;
-	protected int height;
+    // dimensions
+    protected int width;
+    protected int height;
 
-	// collision box
-	protected int cwidth;
-	protected int cheight;
+    // collision box
+    protected int cwidth;
+    protected int cheight;
 
-	// collision
-	protected int currRow;
-	protected int currCol;
-	protected double xdest;
-	protected double ydest;
-	protected double xtemp;
-	protected double ytemp;
-	protected boolean topLeft;
-	protected boolean topRight;
-	protected boolean bottomLeft;
-	protected boolean bottomRight;
+    // collision
+    protected int currRow;
+    protected int currCol;
+    protected double xdest;
+    protected double ydest;
+    protected double xtemp;
+    protected double ytemp;
+    protected boolean topLeft;
+    protected boolean topRight;
+    protected boolean bottomLeft;
+    protected boolean bottomRight;
 
-	// animation
-	protected Animation animation;
-	protected int currentAction;
-	protected int previousAction;
-	protected boolean facingRight;
+    // animation
+    protected Animation animation;
+    protected int currentAction;
+    protected int previousAction;
+    protected boolean facingRight;
 
-	// movement
-	protected boolean left;
-	protected boolean right;
-	protected boolean up;
-	protected boolean down;
-	protected boolean jumping;
-	protected boolean falling;
+    // movement
+    protected boolean left;
+    protected boolean right;
+    protected boolean up;
+    protected boolean down;
+    protected boolean jumping;
+    protected boolean falling;
 
-	// movement attributes
-	protected double moveSpeed;
-	protected double maxSpeed;
-	protected double stopSpeed;
-	protected double fallSpeed;
-	protected double maxFallSpeed;
-	protected double jumpStart;
-	protected double stopJumpSpeed;
+    // movement attributes
+    protected double moveSpeed;
+    protected double maxSpeed;
+    protected double stopSpeed;
+    protected double fallSpeed;
+    protected double maxFallSpeed;
+    protected double jumpStart;
+    protected double stopJumpSpeed;
 
-	// constructor
-	public Actor(TileMap tm) {
-		tileMap = tm;
-		tileSize = tm.getTileSize();
-	}
+    // constructor
+    public Actor(TileMap tm) {
+        tileMap = tm;
+        tileSize = tm.getTileSize();
+    }
 
-	public boolean intersects(Actor o) {
-		Rectangle r1 = getRectangle();
-		Rectangle r2 = o.getRectangle();
-		return r1.intersects(r2);
-	}
+    public boolean intersects(Actor o) {
+        Rectangle r1 = getRectangle();
+        Rectangle r2 = o.getRectangle();
+        return r1.intersects(r2);
+    }
 
-	public Rectangle getRectangle() {
-		return new Rectangle((int) x - cwidth, (int) y - cheight, cwidth,
-				cheight);
-	}
+    public Rectangle getRectangle() {
+        return new Rectangle((int) x - cwidth, (int) y - cheight, cwidth,
+                cheight);
+    }
 
-	public void calculateCorners(double x, double y) {
+    public void calculateCorners(double x, double y) {
 
-		int leftTile = (int) (x - cwidth / 2) / tileSize;
-		int rightTile = (int) (x + cwidth / 2 - 1) / tileSize;
-		int topTile = (int) (y - cheight / 2) / tileSize;
-		int bottomTile = (int) (y + cheight / 2 - 1) / tileSize;
-		if(topTile < 0 || bottomTile >= tileMap.getNumRows() ||
-                leftTile < 0 || rightTile >= tileMap.getNumCols()) {
-                topLeft = topRight = bottomLeft = bottomRight = false;
-                return;
+        int leftTile = (int) (x - cwidth / 2) / tileSize;
+        int rightTile = (int) (x + cwidth / 2 - 1) / tileSize;
+        int topTile = (int) (y - cheight / 2) / tileSize;
+        int bottomTile = (int) (y + cheight / 2 - 1) / tileSize;
+        if (topTile < 0 || bottomTile >= tileMap.getNumRows()
+                || leftTile < 0 || rightTile >= tileMap.getNumCols()) {
+            topLeft = topRight = bottomLeft = bottomRight = false;
+            return;
         }
 
-		topLeft = tileMap.isBlocking(topTile, leftTile);
-		topRight = tileMap.isBlocking(topTile, rightTile);
-		bottomLeft = tileMap.isBlocking(bottomTile, leftTile);
-		bottomRight = tileMap.isBlocking(bottomTile, rightTile);
-	}
-	
-	public void draw(Graphics2D g) {
-		if (facingRight) {
-			g.drawImage(
-				animation.getImage(), 
-				(int) (x + xmap - width / 2),
-				(int) (y + ymap - height / 2), 
-				null
-			);
-		} else {
-			g.drawImage(
-				animation.getImage(),
-				(int) (x + xmap - width / 2 + width ),
-				(int) (y + ymap - height / 2),
-				-width , 
-				height, 
-				null
-			);
-		}
-	}
+        topLeft = tileMap.isBlocking(topTile, leftTile);
+        topRight = tileMap.isBlocking(topTile, rightTile);
+        bottomLeft = tileMap.isBlocking(bottomTile, leftTile);
+        bottomRight = tileMap.isBlocking(bottomTile, rightTile);
+    }
 
-	public void checkTileMapCollision() {
+    public void draw(Graphics2D g) {
+        if (facingRight) {
+            g.drawImage(
+                    animation.getImage(),
+                    (int) (x + xmap - width / 2),
+                    (int) (y + ymap - height / 2),
+                    null
+            );
+        } else {
+            g.drawImage(
+                    animation.getImage(),
+                    (int) (x + xmap - width / 2 + width),
+                    (int) (y + ymap - height / 2),
+                    -width,
+                    height,
+                    null
+            );
+        }
+    }
 
-		currCol = (int) x / tileSize;
-		currRow = (int) y / tileSize;
+    public void checkTileMapCollision() {
 
-		xdest = x + dx;
-		ydest = y + dy;
+        currCol = (int) x / tileSize;
+        currRow = (int) y / tileSize;
 
-		xtemp = x;
-		ytemp = y;
+        xdest = x + dx;
+        ydest = y + dy;
 
-		calculateCorners(x, ydest);
-		if (dy < 0) {
-			if (topLeft || topRight) {
-				dy = 0;
-				ytemp = currRow * tileSize + cheight / 2;
-			} else {
-				ytemp += dy;
-			}
-		}
-		if (dy > 0) {
-			if (bottomLeft || bottomRight) {
-				dy = 0;
-				falling = false;
-				ytemp = (currRow + 1) * tileSize - cheight / 2;
-			} else {
-				ytemp += dy;
-			}
-		}
+        xtemp = x;
+        ytemp = y;
 
-		calculateCorners(xdest, y);
-		if (dx < 0) {
-			if (topLeft || bottomLeft) {
-				dx = 0;
-				xtemp = currCol * tileSize + cwidth / 2;
-			} else {
-				xtemp += dx;
-			}
-		}
-		if (dx > 0) {
-			if (topRight || bottomRight) {
-				dx = 0;
-				xtemp = (currCol + 1) * tileSize - cwidth / 2;
-			} else {
-				xtemp += dx;
-			}
-		}
+        calculateCorners(x, ydest);
+        if (dy < 0) {
+            if (topLeft || topRight) {
+                dy = 0;
+                ytemp = currRow * tileSize + cheight / 2;
+            } else {
+                ytemp += dy;
+            }
+        }
+        if (dy > 0) {
+            if (bottomLeft || bottomRight) {
+                dy = 0;
+                falling = false;
+                ytemp = (currRow + 1) * tileSize - cheight / 2;
+            } else {
+                ytemp += dy;
+            }
+        }
 
-		if (!falling) {
-			calculateCorners(x, ydest + 1);
-			if (!bottomLeft && !bottomRight) {
-				falling = true;
-			}
-		}
+        calculateCorners(xdest, y);
+        if (dx < 0) {
+            if (topLeft || bottomLeft) {
+                dx = 0;
+                xtemp = currCol * tileSize + cwidth / 2;
+            } else {
+                xtemp += dx;
+            }
+        }
+        if (dx > 0) {
+            if (topRight || bottomRight) {
+                dx = 0;
+                xtemp = (currCol + 1) * tileSize - cwidth / 2;
+            } else {
+                xtemp += dx;
+            }
+        }
 
-	}
+        if (!falling) {
+            calculateCorners(x, ydest + 1);
+            if (!bottomLeft && !bottomRight) {
+                falling = true;
+            }
+        }
 
-	public int getx() {
-		return (int) x;
-	}
+    }
 
-	public int gety() {
-		return (int) y;
-	}
+    public int getx() {
+        return (int) x;
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public int gety() {
+        return (int) y;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	public int getCWidth() {
-		return cwidth;
-	}
+    public int getHeight() {
+        return height;
+    }
 
-	public int getCHeight() {
-		return cheight;
-	}
+    public int getCWidth() {
+        return cwidth;
+    }
 
-	public void setPosition(double x, double y) {
-		this.x = x;
-		this.y = y;
-	}
+    public int getCHeight() {
+        return cheight;
+    }
 
-	public void setVector(double dx, double dy) {
-		this.dx = dx;
-		this.dy = dy;
-	}
+    public void setPosition(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 
-	public void setMapPosition() {
-		xmap = tileMap.getx();
-		ymap = tileMap.gety();
-	}
+    public void setVector(double dx, double dy) {
+        this.dx = dx;
+        this.dy = dy;
+    }
 
-	public void setLeft(boolean b) {
-		left = b;
-	}
+    public void setMapPosition() {
+        xmap = tileMap.getXPoisition();
+        ymap = tileMap.getYPosition();
+    }
 
-	public void setRight(boolean b) {
-		right = b;
-	}
+    public void setLeft(boolean b) {
+        left = b;
+    }
 
-	public void setUp(boolean b) {
-		up = b;
-	}
+    public void setRight(boolean b) {
+        right = b;
+    }
 
-	public void setDown(boolean b) {
-		down = b;
-	}
+    public void setUp(boolean b) {
+        up = b;
+    }
 
-	public void setJumping(boolean b) {
-		jumping = b;
-	}
+    public void setDown(boolean b) {
+        down = b;
+    }
 
-	public boolean notOnScreen() {
-		return x + xmap + width < 0 || x + xmap - width > GamePanel.WIDTH
-				|| y + ymap + height < 0
-				|| y + ymap - height > GamePanel.HEIGHT;
-	}
+    public void setJumping(boolean b) {
+        jumping = b;
+    }
 
-	public double getXmap() {
-		return xmap;
-	}
+    public boolean notOnScreen() {
+        return x + xmap + width < 0 || x + xmap - width > GamePanel.WIDTH
+                || y + ymap + height < 0
+                || y + ymap - height > GamePanel.HEIGHT;
+    }
 
-	public double getYmap() {
-		return ymap;
-	}
+    public double getXmap() {
+        return xmap;
+    }
+
+    public double getYmap() {
+        return ymap;
+    }
 }

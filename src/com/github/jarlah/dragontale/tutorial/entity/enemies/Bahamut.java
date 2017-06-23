@@ -10,98 +10,98 @@ import com.github.jarlah.dragontale.tutorial.entity.Enemy;
 import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 
 public class Bahamut extends Enemy {
-	private BufferedImage[] sprites;
-	
-	public Bahamut(TileMap tm) {
-		super(tm);
-		
-		moveSpeed = maxSpeed = 0.2;
-		fallSpeed = 0.2;
-		maxFallSpeed = 10.0;
-		
-		health = maxHealth = 100;
-		damage = 1;
-		
-		try {
-			BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/bahamut.png"));
-			width = cwidth = spriteSheet.getWidth() / 4;
-			height = cheight = spriteSheet.getHeight() / 4;
-			cheight -= 35;
-			cwidth -= 45;
-			sprites = new BufferedImage[4];
-			sprites[0] = spriteSheet.getSubimage(0, 2 * height, width, height);
-			sprites[1] = spriteSheet.getSubimage(width, 2 * height, width, height);
-			sprites[2] = spriteSheet.getSubimage(2 * width, 2 * height, width, height);
-			sprites[3] = spriteSheet.getSubimage(3 * width, 2 * height, width, height);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		animation = new Animation();
-		animation.setFrames(sprites, width, height);
-		animation.setDelay(200);
-		
-		right = true;
-		facingRight = true;
-	}
 
+    private BufferedImage[] sprites;
 
-	public void getNextPosition() {
-		if (left) {
-			dx -= moveSpeed;
-			if (dx < -maxSpeed) {
-				dx = -maxSpeed;
-			}
-		} else if (right) {
-			dx += moveSpeed;
-			if (dx > maxSpeed) {
-				dx = maxSpeed;
-			}
-		}
-		if (falling) {
-			dy += fallSpeed;
-		}
-	}
+    public Bahamut(TileMap tm) {
+        super(tm);
 
-	public void update() {
-		super.update();
-		
-		getNextPosition();
-		checkTileMapCollision();
-		setPosition(xtemp, ytemp);
-		
-		if (flinching) {
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed > 400) {
-				flinching = false;
-			}
-		}
-		
-		if (right && dx == 0) {
-			right = false;
-			left = true;
-			facingRight = false;
-		} else if (left && dx == 0) {
-			right = true;
-			left = false;
-			facingRight = true;
-		}
-		
-		animation.update();
-	}
-	
-	public void draw(Graphics2D g) {
-		//	if (notOnScreen()) return;
-		
-		setMapPosition();
-		
-		if (flinching) {
-			long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
-			if (elapsed / 100 % 2 == 0) {
-				return;
-			}
-		}
-		
-		super.draw(g);
-	}
+        moveSpeed = maxSpeed = 0.2;
+        fallSpeed = 0.2;
+        maxFallSpeed = 10.0;
+
+        health = maxHealth = 100;
+        damage = 1;
+
+        try {
+            BufferedImage spriteSheet = ImageIO.read(getClass().getClassLoader().getResourceAsStream("Sprites/Enemies/bahamut.png"));
+            width = cwidth = spriteSheet.getWidth() / 4;
+            height = cheight = spriteSheet.getHeight() / 4;
+            cheight -= 35;
+            cwidth -= 45;
+            sprites = new BufferedImage[4];
+            sprites[0] = spriteSheet.getSubimage(0, 2 * height, width, height);
+            sprites[1] = spriteSheet.getSubimage(width, 2 * height, width, height);
+            sprites[2] = spriteSheet.getSubimage(2 * width, 2 * height, width, height);
+            sprites[3] = spriteSheet.getSubimage(3 * width, 2 * height, width, height);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        animation = new Animation();
+        animation.setFrames(sprites, width, height);
+        animation.setDelay(200);
+
+        right = true;
+        facingRight = true;
+    }
+
+    public void getNextPosition() {
+        if (left) {
+            dx -= moveSpeed;
+            if (dx < -maxSpeed) {
+                dx = -maxSpeed;
+            }
+        } else if (right) {
+            dx += moveSpeed;
+            if (dx > maxSpeed) {
+                dx = maxSpeed;
+            }
+        }
+        if (falling) {
+            dy += fallSpeed;
+        }
+    }
+
+    public void update() {
+        super.update();
+
+        getNextPosition();
+        checkTileMapCollision();
+        setPosition(xtemp, ytemp);
+
+        if (flinching) {
+            long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+            if (elapsed > 400) {
+                flinching = false;
+            }
+        }
+
+        if (right && dx == 0) {
+            right = false;
+            left = true;
+            facingRight = false;
+        } else if (left && dx == 0) {
+            right = true;
+            left = false;
+            facingRight = true;
+        }
+
+        animation.update();
+    }
+
+    public void draw(Graphics2D g) {
+        //	if (notOnScreen()) return;
+
+        setMapPosition();
+
+        if (flinching) {
+            long elapsed = (System.nanoTime() - flinchTimer) / 1000000;
+            if (elapsed / 100 % 2 == 0) {
+                return;
+            }
+        }
+
+        super.draw(g);
+    }
 }
