@@ -99,6 +99,7 @@ public class TmxFileTileMap implements TileMap {
         return height;
     }
 
+    @Override
     public boolean isBlocking(int row, int col) {
         return map[row][col].isBlocking();
     }
@@ -160,11 +161,12 @@ public class TmxFileTileMap implements TileMap {
                 if (tile == null) {
                     continue;
                 }
-                final int width = (int) x + col * tmxMap.getTileWidth();
-                final int height = (int) y + row * tmxMap.getTileHeight();
-
-                g.drawImage(tile.getImage(), width, height,
-                        null
+                
+                g.drawImage(
+                    tile.getImage(),
+                    (int) x + col * tmxMap.getTileWidth(),
+                    (int) y + row * tmxMap.getTileHeight(),
+                    null
                 );
 
             }
@@ -173,10 +175,12 @@ public class TmxFileTileMap implements TileMap {
 
     }
 
+    @Override
     public int getNumRows() {
         return numRows;
     }
 
+    @Override
     public int getNumCols() {
         return numCols;
     }

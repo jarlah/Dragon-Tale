@@ -31,7 +31,7 @@ public class PlainFileTileMap implements TileMap {
 
     // map
     private Tile[][] map;
-    private int tileSize;
+    private final int tileSize;
     private int numRows;
     private int numCols;
     private int width;
@@ -46,8 +46,8 @@ public class PlainFileTileMap implements TileMap {
     // drawing
     private int rowOffset;
     private int colOffset;
-    private int numRowsToDraw;
-    private int numColsToDraw;
+    private final int numRowsToDraw;
+    private final int numColsToDraw;
 
     public PlainFileTileMap(int tileSize) {
         this.tileSize = tileSize;
@@ -70,7 +70,7 @@ public class PlainFileTileMap implements TileMap {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Could not load map tiles", e);
         }
     }
 
@@ -207,10 +207,12 @@ public class PlainFileTileMap implements TileMap {
 
     }
 
+    @Override
     public int getNumRows() {
         return numRows;
     }
 
+    @Override
     public int getNumCols() {
         return numCols;
     }

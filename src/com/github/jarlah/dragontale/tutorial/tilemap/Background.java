@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
+import java.io.IOException;
 
 public class Background {
 
@@ -24,8 +25,8 @@ public class Background {
             image = ImageIO.read(getClass().getClassLoader()
                     .getResourceAsStream(s));
             moveScale = ms;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new IllegalStateException("Could not load background", e);
         }
 
     }

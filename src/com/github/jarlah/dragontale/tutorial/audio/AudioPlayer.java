@@ -1,17 +1,20 @@
 package com.github.jarlah.dragontale.tutorial.audio;
 
+import java.io.IOException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.SwingUtilities;
 
 public class AudioPlayer {
 
     private Clip clip;
-    private String link;
-    private float volume;
+    private final String link;
+    private final float volume;
 
     public AudioPlayer(String link, float volume) {
         this.link = link;
@@ -38,8 +41,8 @@ public class AudioPlayer {
                 FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
                 gainControl.setValue(volume);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
+            throw new IllegalStateException("Could not load audio player", e);
         }
     }
 
@@ -53,17 +56,14 @@ public class AudioPlayer {
     }
 
     public void play() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                synchronized (AudioPlayer.this) {
-                    if (clip == null) {
-                        init();
-                    }
-                    stop();
-                    clip.setFramePosition(0);
-                    clip.start();
+        SwingUtilities.invokeLater(() -> {
+            synchronized (AudioPlayer.this) {
+                if (clip == null) {
+                    init();
                 }
-
+                stop();
+                clip.setFramePosition(0);
+                clip.start();
             }
         });
     }
@@ -90,17 +90,15 @@ public class AudioPlayer {
     }
 
     public void playLoop() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                synchronized (AudioPlayer.this) {
-                    if (clip == null) {
-                        init();
-                    }
-                    stop();
-                    clip.setFramePosition(0);
-                    clip.setLoopPoints(0, clip.getFrameLength() - 10);
-                    clip.loop(-1);
+        SwingUtilities.invokeLater(() -> {
+            synchronized (AudioPlayer.this) {
+                if (clip == null) {
+                    init();
                 }
+                stop();
+                clip.setFramePosition(0);
+                clip.setLoopPoints(0, clip.getFrameLength() - 10);
+                clip.loop(-1);
             }
         });
     }
