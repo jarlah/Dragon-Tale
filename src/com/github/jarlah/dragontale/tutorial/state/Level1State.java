@@ -32,7 +32,7 @@ public class Level1State extends GameState {
         super(gsm);
 
         tileMap = new TmxFileTileMap(30);
-        tileMap.loadMap("game2.tmx");
+        tileMap.loadMap("game_1.tmx");
         tileMap.setPosition(0, 0);
         tileMap.setTween(0.07);
 
