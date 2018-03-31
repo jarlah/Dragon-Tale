@@ -16,11 +16,13 @@ import com.github.jarlah.dragontale.tutorial.entity.enemies.RedBird;
 import com.github.jarlah.dragontale.tutorial.entity.enemies.Slugger;
 import com.github.jarlah.dragontale.tutorial.main.GamePanel;
 import com.github.jarlah.dragontale.tutorial.tilemap.Background;
+import com.github.jarlah.dragontale.tutorial.tilemap.PlainFileTileMap;
+import com.github.jarlah.dragontale.tutorial.tilemap.TileMap;
 import com.github.jarlah.dragontale.tutorial.tilemap.TmxFileTileMap;
 
 public class Level1State extends GameState {
 
-    private final TmxFileTileMap tileMap;
+    private final PlainFileTileMap tileMap;
     private final Background bg;
     private final Player player;
     private List<Enemy> enemies;
@@ -31,8 +33,9 @@ public class Level1State extends GameState {
     public Level1State(GameStateManager gsm) {
         super(gsm);
 
-        tileMap = new TmxFileTileMap(30);
-        tileMap.loadMap("game_1.tmx");
+        tileMap = new PlainFileTileMap(30);
+        tileMap.loadTiles("Tilesets/grasstileset.gif");
+        tileMap.loadMap("Maps/level.map");
         tileMap.setPosition(0, 0);
         tileMap.setTween(0.07);
 
